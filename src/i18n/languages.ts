@@ -1,6 +1,6 @@
 const lang = {
-  ja: "日本語",
-  en: "English",
+  ru: 'Russian',
+  en: 'English',
 };
 
 export default lang;

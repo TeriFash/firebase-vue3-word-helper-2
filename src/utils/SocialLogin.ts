@@ -1,11 +1,11 @@
-import { auth } from "@/utils/firebase";
+import { auth } from '@/utils/firebase';
 import {
   signInWithPopup,
   GoogleAuthProvider,
   FacebookAuthProvider,
   AuthProvider,
   AuthError,
-} from "firebase/auth";
+} from 'firebase/auth';
 
 const authSignIn = async (
   provider: AuthProvider,
@@ -30,7 +30,7 @@ export const googleSignin = (
 ) => {
   return () => {
     const provider = new GoogleAuthProvider();
-    provider.addScope("email");
+    provider.addScope('email');
     authSignIn(provider, callback, errorCallback);
   };
 };
@@ -41,7 +41,7 @@ export const facebookSignin = (
 ) => {
   return () => {
     const provider = new FacebookAuthProvider();
-    provider.addScope("email,user_birthday");
+    provider.addScope('email,user_birthday');
     authSignIn(provider, callback, errorCallback);
   };
 };

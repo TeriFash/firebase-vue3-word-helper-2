@@ -1,13 +1,13 @@
 import en from "./en";
-import ja from "./ja";
+import ru from "./ru";
 
 const messages = {
   en,
-  ja,
+  ru,
 };
 
 const config = {
-  locale: "en",
+  locale: "ru",
   messages,
 };
 

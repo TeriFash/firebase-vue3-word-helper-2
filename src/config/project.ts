@@ -1,11 +1,11 @@
 export const firebaseConfig = {
-  apiKey: "AIzaSyAd-pX35BsCvIBDXstf_LmQaz82PNFGcMI",
-  authDomain: "fir-vue-startup-kit.firebaseapp.com",
-  databaseURL: "https://fir-vue-startup-kit.firebaseio.com",
-  projectId: "fir-vue-startup-kit",
-  storageBucket: "fir-vue-startup-kit.appspot.com",
-  messagingSenderId: "225404938985",
-  appId: "1:225404938985:web:a2cea9fab1722fce",
+  apiKey: "AIzaSyAud1ZUlWt9ED9Z0YcXcDOjOcN0wMqnrF4",
+  authDomain: "word-helper-reader.firebaseapp.com",
+  databaseURL: "https://word-helper-reader.firebaseapp.com",
+  projectId: "word-helper-reader",
+  storageBucket: "word-helper-reader.appspot.com",
+  messagingSenderId: "345786730681",
+  appId: "1:345786730681:web:82226ed986c828106f3368",
   messageKey:
-    "BGwIKr3yZdXmg4Pl-BpIQX_ETtHYl0RqvAJFoc-hYKFyaoU3wZXarqto5DSq1cemFuARMjFvJ02B83T5ga42MKo",
+    "BPtVyVNhS7LF6yY_WSgqnxWR2bclCjEpDcq4SAM1Otq5prr63ZtvRq_Sqwe-lSBN_L-cFdB_7QnqS-aftx5PH8s",
 };

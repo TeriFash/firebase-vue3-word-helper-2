@@ -1,6 +1,7 @@
 <template>
   <div>
-    <select @change="updateValue">
+    // eslint-disable
+    <select @change="updateValue()">
       <option
         v-for="(option, index) in languages"
         :value="option"
@@ -28,7 +29,10 @@ export default defineComponent({
 
     const selectedValue = ref(i18n.locale.value);
 
-    const updateValue = (value: {target: HTMLSelectElement}) => {
+// (property) 'change': ((payload: Event) => void) | undefined
+    const updateValue = (value: { target: { value: any; }; }) => {
+			// value: {target: HTMLSelectElement}
+		// const {target: HTMLSelectElement} = event.target as HTMLSelectElement
       const basePath = (() => {
         if (route.params.lang) {
           return route.path.slice(route.params.lang.length + 1);
