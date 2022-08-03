@@ -2,18 +2,26 @@ rules_version = '2';
 
 service cloud.firestore {
   match /databases/{database}/documents {
-    match /message/{messageId} {
+    match /{document=**} {
+			// function isSignedIn() {
+      //   return request.auth.uid != null;
+      // }
+      // allow read, write: if false;
+			// allow read, write: if
+			// 	request.time < timestamp.date(2021, 6, 6);
+
+			allow read: if true;
+			allow write: if false;
+
+			// allow read, write: if isSignedIn() && request.auth.uid == resource.data.uid
+    }
+		match /message/{messageId} {
       allow read, create;
       allow delete, update: if false;
     }
     match /test/{testId} {
       allow read;
       allow create, delete, update: if false;
-    }
-    match /{document=**} {
-      // allow read, write: if false;
-			allow read, write: if
-				request.time < timestamp.date(2021, 6, 6);
     }
   }
 }
