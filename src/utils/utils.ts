@@ -11,3 +11,18 @@ export const useIsSignedIn = () => {
   const isSignedIn = computed(() => store.getters.isSignedIn);
   return isSignedIn;
 };
+export const useData = () => {
+  const store = useStore();
+  const data = computed(() => store.state.data);
+  return data;
+};
+export const useSections = () => {
+  const store = useStore();
+  const sections = computed(() => store.getters.getSectionsList);
+  return sections;
+};
+export const useTextInClipboard = () => {
+  const store = useStore();
+  const textInClipboard = computed(() => store.getters.textInClipboard);
+  return textInClipboard;
+};

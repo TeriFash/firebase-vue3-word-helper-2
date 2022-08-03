@@ -10,7 +10,9 @@
 import { defineComponent, reactive, onMounted } from "vue";
 import { useStore } from "vuex";
 
-import { auth } from "@/utils/firebase";
+// const { setData } = useActions(['setData'])
+
+import { auth, firebaseBdDataSetStore } from "@/utils/firebase";
 import { User } from "firebase/auth";
 
 import { useI18nParam } from "@/i18n/utils";
@@ -31,7 +33,20 @@ export default defineComponent({
     const user = reactive<UserData>({ user: null });
     useI18nParam();
 
+		const setClipboardData = async () => {
+			try {
+				const data = await firebaseBdDataSetStore();
+				// const sections: [] | undefined = [...data].find((item) => item?.accompanying )
+				store.commit("loadData", data);
+				store.commit("loadSections", data);
+			} catch(error) {
+				console.error("setClipboardData", error);
+			}
+		}
+
     onMounted(() => {
+			setClipboardData()
+
       auth.onAuthStateChanged((fbuser) => {
         if (fbuser) {
           console.log("authStateChanged:");
