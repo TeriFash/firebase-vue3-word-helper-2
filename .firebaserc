@@ -1,5 +1,7 @@
 {
   "projects": {
-    "default": "word-helper-reader"
-  }
+    "default": "word-helper-reader",
+    "Y": "word-helper-reader"
+  },
+  "targets": {}
 }

@@ -1,11 +1,10 @@
 export const firebaseConfig = {
-  apiKey: "AIzaSyAud1ZUlWt9ED9Z0YcXcDOjOcN0wMqnrF4",
-  authDomain: "word-helper-reader.firebaseapp.com",
-  databaseURL: "https://word-helper-reader.firebaseapp.com",
-  projectId: "word-helper-reader",
-  storageBucket: "word-helper-reader.appspot.com",
-  messagingSenderId: "345786730681",
-  appId: "1:345786730681:web:82226ed986c828106f3368",
-  messageKey:
-    "BPtVyVNhS7LF6yY_WSgqnxWR2bclCjEpDcq4SAM1Otq5prr63ZtvRq_Sqwe-lSBN_L-cFdB_7QnqS-aftx5PH8s",
+  apiKey: process.env.VUE_APP_FIREBASE_API_KEY,
+  authDomain: process.env.VUE_APP_FIREBASE_AUTH_DOMAIN,
+  databaseURL: process.env.VUE_APP_FIREBASE_DATABASE_URL,
+  projectId: process.env.VUE_APP_FIREBASE_PROJECT_ID,
+  storageBucket: process.env.VUE_APP_FIREBASE_STORAGE_BUCKET,
+  messagingSenderId: process.env.VUE_APP_FIREBASE_MESSAGING_SENDER_ID,
+  appId: process.env.VUE_APP_FIREBASE_APP_ID,
+  measurementId: process.env.VUE_APP_FIREBASE_MEASUREMENT_ID,
 };

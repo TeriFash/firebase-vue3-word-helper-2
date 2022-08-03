@@ -2,7 +2,7 @@ import languages from "./languages";
 
 const lang = {
   message: {
-    hello: "Привет",
+    hello: "こんにちは、世界",
   },
   languages,
 };

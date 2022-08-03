@@ -1,8 +1,8 @@
-import languages from './languages';
+import languages from "./languages";
 
 const lang = {
   message: {
-    hello: 'Hello',
+    hello: "hello world",
   },
   languages,
 };

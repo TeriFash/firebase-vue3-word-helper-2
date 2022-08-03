@@ -11,7 +11,9 @@ service cloud.firestore {
       allow create, delete, update: if false;
     }
     match /{document=**} {
-      allow read, write: if false;
+      // allow read, write: if false;
+			allow read, write: if
+				request.time < timestamp.date(2021, 6, 6);
     }
   }
 }
