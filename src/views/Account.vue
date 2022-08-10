@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <div class="account">
     <b-button
       class="account-btn"
