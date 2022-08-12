@@ -6,6 +6,7 @@ import NotFound from "../components/NotFound.vue";
 import Home from "../views/Home.vue";
 import Account from "../views/Account.vue";
 import About from "../views/About.vue";
+import Words from "../views/Words.vue";
 
 const routeChildren: Array<RouteRecordRaw> = [
   {
@@ -16,9 +17,17 @@ const routeChildren: Array<RouteRecordRaw> = [
     path: "about",
     component: About,
   },
-  {
-    path: "account",
+	{
+    path: "about",
+    component: About,
+  },
+	{
+		path: "account",
     component: Account,
+	},
+  {
+    path: "words",
+    component: Words,
   },
 ];
 

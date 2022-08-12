@@ -1,16 +1,14 @@
 <template>
   <div class="layout">
     <template v-if="user.user"> {{ user.user.displayName }}!! </template>
-    <router-view />
     <Languages class="mt-4" />
+    <router-view />
   </div>
 </template>
 
 <script lang="ts">
 import { defineComponent, reactive, onMounted } from "vue";
 import { useStore } from "vuex";
-
-// const { setData } = useActions(['setData'])
 
 import { auth, firebaseBdDataSetStore } from "@/utils/firebase";
 import { User } from "firebase/auth";
@@ -26,26 +24,26 @@ interface UserData {
 export default defineComponent({
   name: "AppLayout",
   components: {
-    Languages,
+    Languages
   },
   async setup() {
     const store = useStore();
     const user = reactive<UserData>({ user: null });
     useI18nParam();
 
-		const setClipboardData = async () => {
-			try {
-				const data = await firebaseBdDataSetStore();
-				// const sections: [] | undefined = [...data].find((item) => item?.accompanying )
-				store.commit("loadData", data);
-				store.commit("loadSections", data);
-			} catch(error) {
-				console.error("setClipboardData", error);
-			}
-		}
+    const setClipboardData = async () => {
+      try {
+        const data = await firebaseBdDataSetStore();
+        // const sections: [] | undefined = [...data].find((item) => item?.accompanying )
+        store.commit("loadData", data);
+        store.commit("loadSections", data);
+      } catch (error) {
+        console.error("setClipboardData", error);
+      }
+    };
 
     onMounted(() => {
-			setClipboardData()
+      setClipboardData();
 
       auth.onAuthStateChanged((fbuser) => {
         if (fbuser) {
@@ -59,8 +57,8 @@ export default defineComponent({
     });
 
     return {
-      user,
+      user
     };
-  },
+  }
 });
 </script>
