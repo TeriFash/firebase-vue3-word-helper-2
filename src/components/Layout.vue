@@ -1,30 +1,30 @@
 <template>
   <div class="layout">
     <template v-if="user.user"> {{ user.user.displayName }}!! </template>
-    <Languages class="mt-4" />
+    <!-- <Languages class="mt-4" /> -->
     <router-view />
   </div>
 </template>
 
 <script lang="ts">
-import { defineComponent, reactive, onMounted } from "vue";
-import { useStore } from "vuex";
+import { defineComponent, reactive, onMounted } from 'vue';
+import { useStore } from 'vuex';
 
-import { auth, firebaseBdDataSetStore } from "@/utils/firebase";
-import { User } from "firebase/auth";
+import { auth, firebaseBdDataSetStore } from '@/utils/firebase';
+import { User } from 'firebase/auth';
 
-import { useI18nParam } from "@/i18n/utils";
+import { useI18nParam } from '@/i18n/utils';
 
-import Languages from "@/components/Languages.vue";
+// import Languages from '@/components/Languages.vue'
 
 interface UserData {
   user: User | null;
 }
 
 export default defineComponent({
-  name: "AppLayout",
+  name: 'AppLayout',
   components: {
-    Languages
+    // Languages
   },
   async setup() {
     const store = useStore();
@@ -35,10 +35,10 @@ export default defineComponent({
       try {
         const data = await firebaseBdDataSetStore();
         // const sections: [] | undefined = [...data].find((item) => item?.accompanying )
-        store.commit("loadData", data);
-        store.commit("loadSections", data);
+        store.commit('loadData', data);
+        store.commit('loadSections', data);
       } catch (error) {
-        console.error("setClipboardData", error);
+        console.error('setClipboardData', error);
       }
     };
 
@@ -47,11 +47,11 @@ export default defineComponent({
 
       auth.onAuthStateChanged((fbuser) => {
         if (fbuser) {
-          console.log("authStateChanged:");
+          console.log('authStateChanged:');
           user.user = fbuser;
-          store.commit("setUser", fbuser);
+          store.commit('setUser', fbuser);
         } else {
-          store.commit("setUser", null);
+          store.commit('setUser', null);
         }
       });
     });
@@ -62,3 +62,8 @@ export default defineComponent({
   }
 });
 </script>
+<style lang="scss">
+.layout {
+  @apply container mx-auto pt-6;
+}
+</style>

@@ -26,3 +26,12 @@ export const useTextInClipboard = () => {
   const textInClipboard = computed(() => store.getters.textInClipboard);
   return textInClipboard;
 };
+export const initClipboardData = async () => {
+	try {
+		const store = useStore();
+		const result = await store.dispatch('setClipboardData');
+  	return result;
+	} catch (error) {
+		console.error(error);
+	}
+};

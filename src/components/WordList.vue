@@ -1,9 +1,9 @@
 <template>
   <div class="word-list container mx-auto">
     <h1 class="font-bold text-3xl text-gray-700 mt-8">{{ headerTitle }} !!</h1>
-    <ul class="word-list__container mt-4">
+    <b-list-group class="word-list__container mt-4">
       <WordListItem v-for="(item, i) in dataWords" :key="i" :text="item" />
-    </ul>
+    </b-list-group>
   </div>
   <!-- :text-key="[index++, listLength[tabActive]]" -->
 </template>

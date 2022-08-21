@@ -1,56 +1,56 @@
-import { createRouter, createWebHistory, RouteRecordRaw } from "vue-router";
-import Layout from "../components/Layout.vue";
-import Blank from "../components/Blank.vue";
-import NotFound from "../components/NotFound.vue";
+import { createRouter, createWebHistory, RouteRecordRaw } from 'vue-router';
+import Layout from '../components/Layout.vue';
+import Blank from '../components/Blank.vue';
+import NotFound from '../components/NotFound.vue';
 
-import Home from "../views/Home.vue";
-import Account from "../views/Account.vue";
-import About from "../views/About.vue";
-import Words from "../views/Words.vue";
+// import Home from '../views/Home.vue';
+import Account from '../views/Account.vue';
+import About from '../views/About.vue';
+import Words from '../views/Words.vue';
 
 const routeChildren: Array<RouteRecordRaw> = [
   {
-    path: "",
-    component: Home,
+    path: '',
+    component: Words, //Home,
   },
   {
-    path: "about",
+    path: 'about',
     component: About,
   },
-	{
-    path: "about",
+  {
+    path: 'about',
     component: About,
   },
-	{
-		path: "account",
+  {
+    path: 'account',
     component: Account,
-	},
+  },
   {
-    path: "words",
+    path: 'words',
     component: Words,
   },
 ];
 
 const routes: Array<RouteRecordRaw> = [
   {
-    path: "/",
+    path: '/',
     component: Layout,
     children: [
       {
-        path: "/:lang",
+        path: '/:lang',
         component: Blank,
         children: routeChildren,
       },
       {
-        path: "",
+        path: '',
         component: Blank,
         children: routeChildren,
       },
     ],
   },
   {
-    path: "/:page(.*)",
-    name: "NotFoundPage",
+    path: '/:page(.*)',
+    name: 'NotFoundPage',
     component: NotFound,
   },
 ];

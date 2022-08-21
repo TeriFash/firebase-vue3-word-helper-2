@@ -1,19 +1,23 @@
 <template>
-  <li class="word-list-item flex w-full">
-    <p class="word-list-item__paragraph" ref="contentListItem"></p>
-
-    <button class="word-list-item__button" @click="doDelete">
-      <i color="red lighten-1" class="btn-clipboard" />
-    </button>
-
-    <button class="word-list-item__button" @click="doCopy">
-      <i color="green lighten-1" class="btn-clipboard" />
-    </button>
-  </li>
+  <b-list-group-item href="#" class="word-list-item flex flex-row justify-between w-full">
+    <div class="flex-auto w-full">
+      <p class="word-list-item__paragraph" ref="contentListItem"></p>
+    </div>
+    <div class="flex-auto flex justify-end w-28">
+      <b-button squared variant="danger" class="word-list-item__button" @click="doDelete">
+        <b-icon icon="trash-fill" aria-hidden="true"></b-icon>
+      </b-button>
+    </div>
+    <div class="flex-auto flex justify-end w-28">
+      <b-button squared variant="success" class="word-list-item__button" @click="doCopy">
+        <b-icon icon="journals" aria-hidden="true"></b-icon>
+      </b-button>
+    </div>
+  </b-list-group-item>
 </template>
 
 <script lang="ts">
-import { defineComponent } from "vue";
+import { defineComponent } from 'vue';
 // import { useStore } from "vuex";
 
 // const { setData } = useActions(['setData'])
@@ -21,15 +25,15 @@ import { defineComponent } from "vue";
 // import { useI18nParam } from "@/i18n/utils";
 
 export default defineComponent({
-  name: "WordListItem",
+  name: 'WordListItem',
   props: {
     handler: {
       type: String,
-      default: ""
+      default: ''
     },
     text: {
       type: String,
-      default: ""
+      default: ''
     },
     textKey: {
       type: Array,
@@ -50,20 +54,17 @@ export default defineComponent({
   },
   methods: {
     setText(val: string) {
-      const { contentListItem = "" }: any = this.$refs;
+      const { contentListItem = '' }: any = this.$refs;
       if (!contentListItem) return;
       const opt = {
-        name: "{ }",
-        nameCompany: "{ $2 }",
-        titleOffer: "{ $1 }",
-        cost: "{ $cost }",
-        time: "{ $time }"
+        name: '{ }',
+        nameCompany: '{ $2 }',
+        titleOffer: '{ $1 }',
+        cost: '{ $cost }',
+        time: '{ $time }'
       };
-      const headerDefault =
-        this.handler || '<span class="mark text-gray-400">{ name }</span>';
-      const headerDefaultFixer = `${headerDefault[0].toUpperCase()}${headerDefault.slice(
-        1
-      )}`;
+      const headerDefault = this.handler || '<span class="mark text-gray-400">{ name }</span>';
+      const headerDefaultFixer = `${headerDefault[0].toUpperCase()}${headerDefault.slice(1)}`;
       const text = val.replace(opt.name, headerDefaultFixer);
 
       contentListItem.innerHTML = text;
@@ -74,18 +75,18 @@ export default defineComponent({
       try {
         this.isLoading = true;
         // await this.$copyText(this.$refs.contentListItem.innerHTML)
-        this.$emit("dialog", "success");
+        this.$emit('dialog', 'success');
       } catch (error) {
-        this.$emit("dialog", "error");
+        this.$emit('dialog', 'error');
       }
     },
     async doDelete() {
       try {
         // await this.deleteWord({ id: this.textKey[0], section: this.tabActive })
         // await this.$copyText(this.$refs.contentListItem.innerHTML)
-        this.$emit("dialog", "success");
+        this.$emit('dialog', 'success');
       } catch (error) {
-        this.$emit("dialog", "error");
+        this.$emit('dialog', 'error');
       }
     }
   }

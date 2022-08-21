@@ -1,6 +1,6 @@
-import { App, computed, watch } from "vue";
-import { useI18n } from "vue-i18n";
-import { useRoute } from "vue-router";
+import { App, computed, watch } from 'vue';
+import { useI18n } from 'vue-i18n';
+import { useRoute } from 'vue-router';
 
 export const i18nUtils = (app: App) => {
   app.config.globalProperties.localizedUrl = (path: string) => {
@@ -17,10 +17,16 @@ export const useI18nParam = () => {
   const i18n = useI18n();
 
   const lang = computed(() => {
-    return (route.params.lang as string) || "en";
+    return (route.params.lang as string) || 'en';
   });
   watch(lang, () => {
     i18n.locale.value = lang.value;
   });
   i18n.locale.value = lang.value;
 };
+
+declare module '@vue/runtime-core' {
+  interface ComponentCustomProperties {
+    localizedUrl: any;
+  }
+}

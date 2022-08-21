@@ -1,7 +1,7 @@
 const lang = {
-  ru: "Русский",
-  ja: "日本語",
-  en: "English",
+  ru: 'Русский',
+  en: 'English',
+  ua: 'Українська',
 };
 
 export default lang;
