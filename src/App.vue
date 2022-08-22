@@ -42,7 +42,6 @@ body {
 }
 
 #app {
-  /* @apply rounded-md p-2 bg-white dark:bg-dark-secondary; */
   @apply font-sans antialiased text-center text-gray-700;
 
   a {
