@@ -8,13 +8,17 @@
 <script lang="ts">
 import { defineComponent, computed, onMounted } from 'vue';
 import { useUser, useIsSignedIn, initClipboardData } from '@/utils/utils';
-
+// import { useLocalizedUrl } from '@/i18n/utils';
 export default defineComponent({
   setup() {
     const user = useUser();
     const isSignedIn = useIsSignedIn();
+    // console.log('✅ 🧊 ~ localizedUrl', localizedUrl('/'));
 
     onMounted(async () => {
+      // localizedUrl('/');
+      // useLocalizedUrl();
+
       await initClipboardData();
     });
 

@@ -1,5 +1,5 @@
 <template>
-  <b-nav-item-dropdown tag="ul" class="languages" v-if="navbar" :text="selectedValue.toUpperCase()" right>
+  <b-nav-item-dropdown tag="ul" class="languages" v-if="navbar" :text="selectedValue" right>
     <b-dropdown-item
       class="text-1xl"
       @click="updateNavbarValue($event, option)"
@@ -23,10 +23,11 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from 'vue';
+import { defineComponent, ref, onMounted, watch, computed } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { useI18n } from 'vue-i18n';
 import { languages } from '@/i18n/index';
+import { useI18nParam } from '@/i18n/utils';
 
 export default defineComponent({
   emits: ['change'],
@@ -42,6 +43,11 @@ export default defineComponent({
     const router = useRouter();
     const i18n = useI18n();
     const selectedValue = ref(i18n.locale.value);
+    const localLang: any = window.localStorage.getItem('lang');
+
+    const lang = computed(() => {
+      return (i18n.locale.value as string) || localLang;
+    });
 
     const updateValue = (event: Event) => {
       // const HTMLSelectElement: EventTarget | null
@@ -60,7 +66,7 @@ export default defineComponent({
       }
     };
 
-    const updateNavbarValue = (event: Event, value: string) => {
+    const updateNavbarValue = (event: Event | any, value: string) => {
       if (value !== selectedValue.value) {
         const basePath = (() => {
           if (route.params.lang) {
@@ -75,8 +81,38 @@ export default defineComponent({
       }
     };
 
+    const initNavbarValue = (value: string) => {
+      if (!route.params.lang) {
+        const basePath = (() => {
+          if (route.params.lang) {
+            return route.path.slice(route.params.lang.length + 1);
+          }
+          return route.path;
+        })();
+        const newPath = `/${value}${basePath}`;
+        if (newPath !== route.path) {
+          router.push(newPath);
+        }
+      }
+    };
+
+    watch(lang, () => {
+      selectedValue.value = lang.value;
+    });
+
+    onMounted(() => {
+      useI18nParam();
+      initNavbarValue(localLang);
+      // if (localLang === selectedValue.value) {
+      //   initNavbarValue(selectedValue.value);
+      // } else {
+      //   initNavbarValue(localLang);
+      // }
+    });
+
     return {
       languages,
+      lang,
       selectedValue,
       updateValue,
       updateNavbarValue
@@ -92,7 +128,8 @@ export default defineComponent({
 
     & .btn.btn-link.dropdown-toggle {
       text-decoration: none;
-      /* @apply text-gray-600 outline-none focus:outline-none; */
+      text-transform: uppercase;
+      @apply font-bold;
     }
   }
 }

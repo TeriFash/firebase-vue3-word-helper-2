@@ -2,6 +2,8 @@ import ru from './languages/ru';
 import en from './languages/en';
 import ua from './languages/ua';
 
+const locale: any = window.localStorage.getItem('lang');
+
 const messages = {
   ru,
   en,
@@ -10,7 +12,7 @@ const messages = {
 
 const config = {
   legacy: false,
-  locale: 'ru',
+  locale: locale,
   globalInjection: true,
   messages,
 };

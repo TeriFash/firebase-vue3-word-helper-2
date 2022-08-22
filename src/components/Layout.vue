@@ -13,7 +13,7 @@ import { useStore } from 'vuex';
 import { auth, firebaseBdDataSetStore } from '@/utils/firebase';
 import { User } from 'firebase/auth';
 
-import { useI18nParam } from '@/i18n/utils';
+// import { useI18nParam } from '@/i18n/utils';
 
 // import Languages from '@/components/Languages.vue'
 
@@ -29,7 +29,7 @@ export default defineComponent({
   async setup() {
     const store = useStore();
     const user = reactive<UserData>({ user: null });
-    useI18nParam();
+    // useI18nParam();
 
     const setSectionsData = async () => {
       try {

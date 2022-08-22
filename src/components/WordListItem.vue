@@ -4,13 +4,13 @@
       <p class="word-list-item__paragraph" ref="contentListItem"></p>
     </div>
     <div class="flex-auto flex justify-end w-28">
-      <b-button :disabled="true" squared variant="danger" class="word-list-item__button" @click="doDelete">
+      <b-button :disabled="true" variant="danger" class="word-list-item__button" @click="doDelete">
         Delete
         <!-- <b-icon icon="trash-fill" aria-hidden="true"></b-icon> -->
       </b-button>
     </div>
     <div class="flex-auto flex justify-end w-28">
-      <b-button squared variant="success" class="word-list-item__button" @click="doCopy">
+      <b-button variant="success" class="word-list-item__button" @click="doCopy">
         Copy
         <!-- <b-icon icon="journals" aria-hidden="true"></b-icon> -->
       </b-button>
@@ -117,15 +117,21 @@ export default defineComponent({
 });
 </script>
 
-<style>
+<style lang="scss">
 .word-list-item {
   justify-self: flex-start;
   flex-wrap: nowrap;
+
+  &__button {
+    &button.btn {
+      @apply bg-green-600;
+    }
+  }
 }
 
 .word-list-item__button {
   height: 24px;
-  min-height: 24px;
+  min-height: 34px;
   width: 54px;
   min-width: 54px;
   padding: 2px 0;
@@ -134,11 +140,18 @@ export default defineComponent({
 }
 
 .word-list-item__button.btn-danger {
-  background-color: var(--bs-red);
+  /* background-color: var(--bs-red); */
+  @apply bg-red-600 hover:bg-red-700;
+}
+
+.word-list-item__button.btn-warning {
+  /* background-color: var(--bs-red); */
+  @apply bg-orange-600 hover:bg-orange-700;
 }
 
 .word-list-item__button.btn-success {
-  background-color: var(--bs-green);
+  /* background-color: var(--bs-green); */
+  @apply bg-green-600 hover:bg-green-700;
 }
 
 .word-list-item__paragraph {

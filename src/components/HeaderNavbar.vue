@@ -2,8 +2,8 @@
   <b-navbar class="header-navbar" id="nav" toggleable="md" type="dark" variant="dark">
     <b-navbar-brand tag="h1" class="mb-0 mr-4" type="light" :to="localizedUrl('/')">
       Words
-      <span class="header-navbar__subline" v-if="$store.state.tabActive">
-        {{ $store.state.sectionsTitles[$store.state.tabActive] }}
+      <span class="header-navbar__subline" v-if="getTabActiveTitle">
+        {{ getTabActiveTitle }}
       </span>
     </b-navbar-brand>
 
@@ -39,9 +39,9 @@
       <b-navbar-nav justified :class="{ 'header-navbar__collapse-right': collapse }" class="ml-auto">
         <languages navbar />
 
-        <b-nav-form class="d-flex">
-          <b-form-input size="md" class="py-2 mr-md-2" placeholder="Search"></b-form-input>
-          <b-button size="md" class="ml-1 mr-2 my-md-0" type="submit">Search</b-button>
+        <b-nav-form class="d-flex header-navbar__form">
+          <b-form-input size="md" class="header-navbar__form-input" placeholder="Search"></b-form-input>
+          <b-button variant="dark" size="md" class="header-navbar__form-btn" type="submit">Search</b-button>
         </b-nav-form>
 
         <!-- <b-nav-item-dropdown right>
@@ -58,9 +58,10 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import { useI18nParam } from '@/i18n/utils';
+
 import Languages from '@/components/Languages.vue';
 // import { useUser } from '@/utils/utils';
+import { mapGetters } from 'vuex';
 
 export default defineComponent({
   name: 'HeaderNavbar',
@@ -79,11 +80,21 @@ export default defineComponent({
     Languages
   },
   setup() {
-    useI18nParam();
     // const user = useUser();
     return {
       // user
     };
+  },
+  computed: {
+    ...mapGetters({
+      getTabActive: 'getTabActive',
+      getSectionsTitles: 'getSectionsTitles'
+    }),
+    getTabActiveTitle() {
+      if (this.getTabActive) return this.getSectionsTitles[this.getTabActive];
+      const titles = Object.values(this.getSectionsTitles);
+      return titles[0];
+    }
   },
   methods: {
     handlerUpdate(val: any) {
@@ -100,18 +111,14 @@ export default defineComponent({
 
     .nav-link,
     .navbar-brand {
-      @apply font-bold text-gray-600 hover:text-green-700;
+      @apply font-bold text-gray-600 hover:text-green-600;
     }
 
     .router-link-exact-active {
-      @apply text-green-600 hover:text-green-700;
+      @apply text-green-600 hover:text-green-600;
     }
   }
-  &__subline {
-    font-size: 12px;
-    margin-left: 8px;
-    @apply text-gray-500 hover:text-gray-600;
-  }
+
   /* & a {
     @apply font-bold text-gray-700;
   }
@@ -141,6 +148,39 @@ export default defineComponent({
 }
 
 .header-navbar {
+  &.navbar {
+    .header-navbar__subline {
+      font-size: 12px;
+      margin-left: 8px;
+      cursor: default;
+      @apply text-gray-700 hover:text-gray-700;
+    }
+  }
+
+  .header-navbar__form {
+    min-height: 38px;
+    & .header-navbar__form-btn.btn {
+      min-height: 38px;
+      padding: 0 15px;
+      border: none;
+      outline: none;
+      box-shadow: none;
+    }
+  }
+
+  &__form-input {
+    max-height: 38px;
+    margin-right: 12px;
+    border: none;
+    outline: none;
+    box-shadow: none;
+
+    &:focus {
+      border: none;
+      outline: none;
+      box-shadow: none;
+    }
+  }
   .header-navbar__collapse-left {
     flex-direction: row;
 
