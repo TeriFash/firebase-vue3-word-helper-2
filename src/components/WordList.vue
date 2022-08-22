@@ -1,50 +1,66 @@
 <template>
   <div class="word-list container mx-auto">
-    <h1 class="font-bold text-3xl text-gray-700 mt-8">{{ headerTitle }} !!</h1>
+    <h1 class="font-bold text-3xl text-gray-700 mt-8">{{ headerTitle }} !</h1>
     <b-list-group class="word-list__container mt-4">
-      <WordListItem v-for="(item, i) in dataWords" :key="i" :text="item" />
+      <word-list-item
+        @dialog="handlerAlertSuccess($event)"
+        v-for="(item, i) in getSectionsList[title]"
+        :handler="i"
+        :key="i"
+        :text="item"
+      />
     </b-list-group>
+    <b-alert :show="dismissCountDown" :variant="typeAlert">Success Alert</b-alert>
   </div>
-  <!-- :text-key="[index++, listLength[tabActive]]" -->
 </template>
 
 <script lang="ts">
-import { defineComponent } from "vue";
-import { mapGetters } from "vuex";
+import { defineComponent } from 'vue';
+import { mapGetters } from 'vuex';
 
-// import { useI18nParam } from "@/i18n/utils";
-
-import WordListItem from "@/components/WordListItem.vue";
+import WordListItem from '@/components/WordListItem.vue';
 
 export default defineComponent({
-  name: "WordList",
+  name: 'WordList',
   props: {
     title: {
       type: [String],
-      default: ""
+      default: ''
     },
-    dataWords: {
-      type: [Object],
-      default: () => ({})
-    }
+  },
+  data() {
+    return {
+      showAlert: false,
+      dismissSecs: 5,
+      dismissCountDown: 0,
+      typeAlert: 'success'
+    };
   },
   components: {
     WordListItem
   },
   computed: {
     ...mapGetters({
-      getTextInputName: "getTextInputName",
-      getClipboardData: "getClipboardData",
-      getClipboardLoading: "getClipboardLoading",
-      getSectionsList: "getSectionsList"
+      getTextInputName: 'getTextInputName',
+      getClipboardData: 'getClipboardData',
+      getClipboardLoading: 'getClipboardLoading',
+      getSectionsList: 'getSectionsList',
+      getSectionsTitles: 'getSectionsTitles'
     }),
     headerIndex() {
-      return Object.keys(this.getSectionsList).findIndex(
-        (e) => e === this.title
-      );
+      return Object.keys(this.getSectionsList).findIndex((e) => e === this.title);
     },
     headerTitle() {
-      return `${this.title[0].toUpperCase()}${this.title.slice(1)}`;
+      return this.getSectionsTitles[this.title];
+    }
+  },
+  methods: {
+    countDownChanged(dismissCountDown: any) {
+      this.dismissCountDown = dismissCountDown;
+    },
+    handlerAlertSuccess(event: Event) {
+      this.typeAlert = event.type;
+      this.dismissCountDown = 5;
     }
   }
 });

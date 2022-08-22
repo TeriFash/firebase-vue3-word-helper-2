@@ -10,19 +10,16 @@
         >Copy</b-button
       >
     </div>
-    <!-- <HelloWorld /> -->
   </div>
 </template>
 
 <script lang="ts">
 import { defineComponent, ref, onMounted, onBeforeUpdate } from 'vue';
-// import HelloWorld from '@/components/HelloWorld.vue';
 import { toClipboard } from '@soerenmartius/vue3-clipboard';
 
 export default defineComponent({
   name: 'HomePage',
   components: {
-    // HelloWorld
   },
   setup() {
     const data = ref<HTMLElement | undefined | null>(null);
@@ -38,7 +35,6 @@ export default defineComponent({
 
     onMounted(() => {
       const text = data.value?.textContent;
-      console.log('✅ 🧊 ~ text', text);
       value.value = text;
       console.log('✅ 🧊 ~ data.value %O', data.value);
     });

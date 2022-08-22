@@ -1,43 +1,49 @@
-import { createStore } from "vuex";
-import { User } from "firebase/auth";
-
+import { createStore } from 'vuex';
+import { User } from 'firebase/auth';
 interface State {
   user: User | null | undefined;
-  textInClipboard: string | "";
-  sections: object | null | undefined;
+  textInClipboard: string | '';
+  tabActive: string | any;
+  sections: object;
+  sectionsTitles: object;
   data: object | null | undefined;
 }
 
 export default createStore<State>({
   state: {
     user: undefined,
-    textInClipboard: "",
+    textInClipboard: '',
+    tabActive: '',
     sections: {},
+    sectionsTitles: {},
     data: [],
   },
   mutations: {
     setUser(state: State, user: User | null) {
       state.user = user;
     },
+		setTabActive(state: State, active) {
+      state.tabActive = active;
+    },
     loadSections(state: State, data) {
-      const { simple, accompanying, rare } = data[2];
+      const { simple, accompanying, rare } = data;
       const sections = { simple, accompanying, rare };
-			
+
       state.sections = sections;
-      localStorage.setItem("sections", JSON.stringify(sections));
+      localStorage.setItem('sections', JSON.stringify(sections));
 
       // if (localStorage.getItem("sections")) {
       // }
     },
-    loadData(state: State, data) {
-      state.data = data;
+    loadSectionsTitles(state: State, titles) {
+      state.sectionsTitles = titles;
     },
     loadClipboardData(state: State, data) {
       const statusCheck = state.textInClipboard === data;
 
       if (!statusCheck) {
         state.textInClipboard = data;
-        localStorage.setItem("textInClipboard", data);
+        localStorage.setItem('textInClipboard', data);
       }
     },
   },
@@ -45,9 +51,18 @@ export default createStore<State>({
     isSignedIn: (state: State) => {
       return state.user !== null && state.user !== undefined;
     },
-    getDataList: (state: State) => state.data,
+    getSectionCurrentData: (state: State) => Object.keys(state.sections)[state.tabActive],
     getSectionsList: (state: State) => state.sections,
-    getClipboardData: (state: State) => state.textInClipboard,
+    getTabActive: (state: State) => state.tabActive,
+    getSectionsTitles: (state: State) => {
+      const titles: any = {};
+      Object.keys(state.sections).forEach((title: any) => {
+        titles[title] = `${title[0].toUpperCase()}${title.slice(1)}`;
+      });
+
+      return titles;
+    },
+    getClipboardData: (state: State) => state.textInClipboard || localStorage.getItem('textInClipboard'),
   },
   actions: {
     fetchSections: async ({ commit }) => {
@@ -59,34 +74,37 @@ export default createStore<State>({
         querySnapshot.forEach((doc) => {
           result.push(doc.data());
         });
-        commit("loadSections", result);
+        commit('loadSections', result);
       } catch (error) {
         console.error(error);
       }
     },
-    setData({ commit }, payload) {
-      // const { collection } = payload;
-      // const result: any[] = [];
+    setTabActive({ commit }, payload) {
+			commit('setTabActive', payload);
+		},
+    setSetionData({ commit }, payload) {
       try {
-        // await this._vm.$db
-        //   .collection(collection)
-        //   .get()
-        //   .then((querySnapshot: any[]) => {
-        //     querySnapshot.forEach((doc) => {
-        //       result.push(doc.data());
-        //     });
-        //     commit("loadData", result);
-        //   });
-        commit("loadData", payload);
+        const { simple, rare, accompanying }: any = payload;
+        const titles: any = {};
+        const data: any = { simple, rare, accompanying };
+        Object.keys(data).forEach((title: any) => {
+          titles[title] = `${title[0].toUpperCase()}${title.slice(1)}`;
+        });
+        commit('loadSections', data);
+        commit('loadSectionsTitles', titles);
       } catch (error) {
         console.error(error);
       }
     },
     setClipboardData: async ({ commit }, payload) => {
       try {
-        let result = "";
-        const text = await window.navigator.clipboard.readText();
-        const textCheck = text.split(" ");
+        let result = '';
+        const textInClipboard: string | any = localStorage.getItem('textInClipboard');
+        const textCheck = payload.split(' ');
+
+        if (payload === textInClipboard) {
+          return;
+        }
 
         if (textCheck.length <= 2) {
           result = textCheck[0];
@@ -94,9 +112,9 @@ export default createStore<State>({
           result = textCheck[0] || textCheck[1];
         }
 
-        commit("loadClipboardData", result);
+        commit('loadClipboardData', result);
 
-        if (payload) commit("loadClipboardData", !payload ? payload : "");
+        // if (payload) commit('loadClipboardData', !payload ? payload : '');
         return result;
       } catch (error) {
         console.error(error);

@@ -1,5 +1,5 @@
-import { computed } from "vue";
-import { useStore } from "vuex";
+import { computed } from 'vue';
+import { useStore } from 'vuex';
 
 export const useUser = () => {
   const store = useStore();
@@ -23,15 +23,17 @@ export const useSections = () => {
 };
 export const useTextInClipboard = () => {
   const store = useStore();
-  const textInClipboard = computed(() => store.getters.textInClipboard);
+  // const text = await window.navigator.clipboard.readText();
+  const textInClipboard = computed(() => store.getters.getClipboardData);
   return textInClipboard;
 };
 export const initClipboardData = async () => {
-	try {
-		const store = useStore();
-		const result = await store.dispatch('setClipboardData');
-  	return result;
-	} catch (error) {
-		console.error(error);
-	}
+  try {
+    const store = useStore();
+    const text = await window.navigator.clipboard.readText();
+    const result = await store.dispatch('setClipboardData', text);
+    return result;
+  } catch (error) {
+    // console.error(error);
+  }
 };

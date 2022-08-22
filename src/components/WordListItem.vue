@@ -4,13 +4,15 @@
       <p class="word-list-item__paragraph" ref="contentListItem"></p>
     </div>
     <div class="flex-auto flex justify-end w-28">
-      <b-button squared variant="danger" class="word-list-item__button" @click="doDelete">
-        <b-icon icon="trash-fill" aria-hidden="true"></b-icon>
+      <b-button :disabled="true" squared variant="danger" class="word-list-item__button" @click="doDelete">
+        Delete
+        <!-- <b-icon icon="trash-fill" aria-hidden="true"></b-icon> -->
       </b-button>
     </div>
     <div class="flex-auto flex justify-end w-28">
       <b-button squared variant="success" class="word-list-item__button" @click="doCopy">
-        <b-icon icon="journals" aria-hidden="true"></b-icon>
+        Copy
+        <!-- <b-icon icon="journals" aria-hidden="true"></b-icon> -->
       </b-button>
     </div>
   </b-list-group-item>
@@ -18,14 +20,17 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
+import useToCopy from '@/composables/useToCopy';
+
 // import { useStore } from "vuex";
 
 // const { setData } = useActions(['setData'])
 
-// import { useI18nParam } from "@/i18n/utils";
+import { useTextInClipboard } from '@/utils/utils';
 
 export default defineComponent({
   name: 'WordListItem',
+  events: ['dialog'],
   props: {
     handler: {
       type: String,
@@ -44,17 +49,33 @@ export default defineComponent({
     return {
       // isDblClick: false,
       isLoading: false,
+      isSetText: '',
       dialogs: {
         delete: false
       }
+      // useToCopy: useToCopy()
     };
   },
   mounted() {
     this.setText(this.text);
   },
+  updated() {
+    // const dataValue: any = initClipboardData();
+    // const { value }: any = useTextInClipboard();
+    // if (this.isSetText !== value) {
+    //   this.setText(this.text);
+    // }
+  },
   methods: {
+    firstWordUppercase(val: string) {
+      if (!val) return '<span class="mark text-gray-400">{ name }</span>';
+      return `${val[0].toUpperCase()}${val.slice(1)}`;
+    },
     setText(val: string) {
       const { contentListItem = '' }: any = this.$refs;
+      const { value }: any = useTextInClipboard();
+      this.isSetText = value;
+
       if (!contentListItem) return;
       const opt = {
         name: '{ }',
@@ -63,21 +84,24 @@ export default defineComponent({
         cost: '{ $cost }',
         time: '{ $time }'
       };
-      const headerDefault = this.handler || '<span class="mark text-gray-400">{ name }</span>';
-      const headerDefaultFixer = `${headerDefault[0].toUpperCase()}${headerDefault.slice(1)}`;
-      const text = val.replace(opt.name, headerDefaultFixer);
+      const headerFixer = this.firstWordUppercase(value);
+      const text = val.replace(opt.name, headerFixer);
 
       contentListItem.innerHTML = text;
       return text;
     },
     async doCopy() {
-      // console.log("✅ [87] ~ e", e);
       try {
+        const { contentListItem = '' }: any = this.$refs;
         this.isLoading = true;
+        const tetx = contentListItem?.innerHTML;
+        await useToCopy(tetx);
         // await this.$copyText(this.$refs.contentListItem.innerHTML)
-        this.$emit('dialog', 'success');
+        await this.$emit('dialog', { type: 'success' });
+        this.isLoading = false;
       } catch (error) {
-        this.$emit('dialog', 'error');
+        this.$emit('dialog', { type: 'danger' });
+        this.isLoading = false;
       }
     },
     async doDelete() {
@@ -104,6 +128,17 @@ export default defineComponent({
   min-height: 24px;
   width: 54px;
   min-width: 54px;
+  padding: 2px 0;
+  font-size: 12px;
+  /* line-height: 20px; */
+}
+
+.word-list-item__button.btn-danger {
+  background-color: var(--bs-red);
+}
+
+.word-list-item__button.btn-success {
+  background-color: var(--bs-green);
 }
 
 .word-list-item__paragraph {

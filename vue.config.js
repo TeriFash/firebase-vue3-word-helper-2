@@ -17,7 +17,7 @@ module.exports = defineConfig({
   },
   css: {
     sourceMap: process.env.NODE_ENV !== 'production'
-  }
+  },
 	// chainWebpack: config => {
   //   config.resolve.alias.set(
   //     'vue$',

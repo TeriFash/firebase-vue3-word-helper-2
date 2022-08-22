@@ -1,6 +1,6 @@
 <template>
   <div class="layout">
-    <template v-if="user.user"> {{ user.user.displayName }}!! </template>
+    <!-- <template v-if="$store.state.tabActive"> {{ $store.state.sectionsTitles[$store.state.tabActive] }}!! </template> -->
     <!-- <Languages class="mt-4" /> -->
     <router-view />
   </div>
@@ -31,19 +31,23 @@ export default defineComponent({
     const user = reactive<UserData>({ user: null });
     useI18nParam();
 
-    const setClipboardData = async () => {
+    const setSectionsData = async () => {
       try {
-        const data = await firebaseBdDataSetStore();
-        // const sections: [] | undefined = [...data].find((item) => item?.accompanying )
-        store.commit('loadData', data);
-        store.commit('loadSections', data);
+        const dataLocal: any = localStorage.getItem('sections');
+
+        if (JSON.parse(dataLocal)) {
+          store.dispatch('setSetionData', JSON.parse(dataLocal));
+        } else {
+          const data: any[] | undefined = await firebaseBdDataSetStore();
+          store.dispatch('setSetionData', data);
+        }
       } catch (error) {
-        console.error('setClipboardData', error);
+        console.error('setSetionData', error);
       }
     };
 
     onMounted(() => {
-      setClipboardData();
+      setSectionsData();
 
       auth.onAuthStateChanged((fbuser) => {
         if (fbuser) {
