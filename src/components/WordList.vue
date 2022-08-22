@@ -1,23 +1,20 @@
 <template>
-  <div class="word-list container mx-auto">
-    <h1 class="font-bold text-3xl text-gray-700 mt-8">{{ headerTitle }} !</h1>
-    <b-list-group class="word-list__container mt-4">
-      <word-list-item
-        @dialog="handlerAlertSuccess($event)"
-        v-for="(item, i) in getSectionsList[title]"
-        :handler="i"
-        :key="i"
-        :text="item"
-      />
-    </b-list-group>
-    <b-alert :show="dismissCountDown" :variant="typeAlert">Success Alert</b-alert>
-  </div>
+  <!-- <h1 class="font-bold text-3xl text-gray-700 mt-8">{{ headerTitle }} !</h1> -->
+  <b-list-group :flush="true" class="word-list mx-auto word-list__container mt-4">
+    <word-list-item
+      @dialog="$emit('dialog', $event)"
+      v-for="(item, i) in getSectionsList[title]"
+      :handler="i"
+      :key="i"
+      :text="setText(item)"
+    />
+  </b-list-group>
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue';
 import { mapGetters } from 'vuex';
-
+import { useTextInClipboard } from '@/utils/utils';
 import WordListItem from '@/components/WordListItem.vue';
 
 export default defineComponent({
@@ -26,15 +23,11 @@ export default defineComponent({
     title: {
       type: [String],
       default: ''
-    },
+    }
   },
+  emits: ['dialog'],
   data() {
-    return {
-      showAlert: false,
-      dismissSecs: 5,
-      dismissCountDown: 0,
-      typeAlert: 'success'
-    };
+    return {};
   },
   components: {
     WordListItem
@@ -55,12 +48,23 @@ export default defineComponent({
     }
   },
   methods: {
-    countDownChanged(dismissCountDown: any) {
-      this.dismissCountDown = dismissCountDown;
+    firstWordUppercase(val: string) {
+      if (!val) return '<span class="mark text-gray-400">{ name }</span>';
+      return `${val[0].toUpperCase()}${val.slice(1)}`;
     },
-    handlerAlertSuccess(event: Event) {
-      this.typeAlert = event.type;
-      this.dismissCountDown = 5;
+    setText(val: string) {
+      const { value }: any = useTextInClipboard();
+      const opt = {
+        name: '{ }',
+        nameCompany: '{ $2 }',
+        titleOffer: '{ $1 }',
+        cost: '{ $cost }',
+        time: '{ $time }'
+      };
+      const headerFixer = this.firstWordUppercase(value);
+      const text = val.replace(opt.name, headerFixer);
+
+      return text;
     }
   }
 });

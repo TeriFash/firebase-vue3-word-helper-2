@@ -29,7 +29,6 @@ export default defineComponent({
   async setup() {
     const store = useStore();
     const user = reactive<UserData>({ user: null });
-    // useI18nParam();
 
     const setSectionsData = async () => {
       try {

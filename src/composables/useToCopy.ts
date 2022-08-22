@@ -1,5 +1,5 @@
 import useClipboard from 'vue-clipboard3';
-
+import { ref, reactive } from 'vue';
 /**
  *
  * useToCopy methods copies the passed text to the clipboard;
@@ -9,12 +9,13 @@ import useClipboard from 'vue-clipboard3';
  * @return call copyToClipboard() when to perform a copy action
  * */
 
-export default async function useToCopy(initialValue: string) {
+export default async function useToCopy(initialValue: string, refer: any) {
   try {
     const { toClipboard } = useClipboard();
+    const textRes = await toClipboard(initialValue, refer);
+    // const waypointText = reactive({ textRes });
 
-    const text = await toClipboard(initialValue);
-    return text;
+    return textRes;
   } catch (err) {
     console.log('✅ 🧊 ~ err', err);
   }
@@ -30,4 +31,6 @@ export default async function useToCopy(initialValue: string) {
   // return copyToClipboard();
 }
 
-export { useToCopy };
+const { toClipboard } = useClipboard();
+
+export { useToCopy, toClipboard };

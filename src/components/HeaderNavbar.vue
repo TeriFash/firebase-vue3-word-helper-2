@@ -1,7 +1,7 @@
 <template>
   <b-navbar class="header-navbar" id="nav" toggleable="md" type="dark" variant="dark">
     <b-navbar-brand tag="h1" class="mb-0 mr-4" type="light" :to="localizedUrl('/')">
-      Words
+      {{ $t('menu.words') }}
       <span class="header-navbar__subline" v-if="getTabActiveTitle">
         {{ getTabActiveTitle }}
       </span>
@@ -9,12 +9,18 @@
 
     <!-- <b-navbar-toggle :class="{ 'header-navbar__collapse-btn': true }" target="nav-collapse"></b-navbar-toggle> -->
 
-    <b-navbar-toggle :class="{ 'header-navbar__collapse-btn': true }" target="nav-collapse">
+    <b-navbar-toggle
+      aria-controls="nav-collapse"
+      :aria-expanded="collapse ? true : false"
+      :class="{ 'header-navbar__collapse-btn': true }"
+      target="nav-collapse"
+    >
       <!-- <template #default="{ expanded }">
         <b-icon v-if="expanded" icon="chevron-bar-up"></b-icon>
         <b-icon v-else icon="chevron-bar-down"></b-icon>
       </template> -->
     </b-navbar-toggle>
+    <!-- @update:modelValue="collapse = $event" -->
 
     <b-collapse
       @update:modelValue="collapse = $event"
@@ -24,14 +30,14 @@
     >
       <b-navbar-nav :class="{ 'header-navbar__collapse-left': collapse }" class="mr-auto">
         <template v-if="signedIn">
-          <b-nav-item :to="localizedUrl('/')">Home</b-nav-item>
-          <b-nav-item :to="localizedUrl('/about')">About</b-nav-item>
+          <b-nav-item :to="localizedUrl('/')">{{ $t('menu.home') }}</b-nav-item>
+          <b-nav-item :to="localizedUrl('/about')">{{ $t('menu.about') }}</b-nav-item>
         </template>
         <template v-else>
-          <b-nav-item :to="localizedUrl('/')">Home</b-nav-item>
-          <b-nav-item :to="localizedUrl('/about')">About</b-nav-item>
-          <b-nav-item :to="localizedUrl('/account')">SignIn</b-nav-item>
-          <b-nav-item :to="localizedUrl('/words')">Words</b-nav-item>
+          <b-nav-item active :to="localizedUrl('/')">{{ $t('menu.home') }}</b-nav-item>
+          <b-nav-item :to="localizedUrl('/about')">{{ $t('menu.about') }}</b-nav-item>
+          <b-nav-item :to="localizedUrl('/account')">{{ $t('menu.signIn') }}</b-nav-item>
+          <b-nav-item :to="localizedUrl('/words')">{{ $t('menu.words') }}</b-nav-item>
         </template>
       </b-navbar-nav>
 
@@ -40,8 +46,14 @@
         <languages navbar />
 
         <b-nav-form class="d-flex header-navbar__form">
-          <b-form-input size="md" class="header-navbar__form-input" placeholder="Search"></b-form-input>
-          <b-button variant="dark" size="md" class="header-navbar__form-btn" type="submit">Search</b-button>
+          <b-form-input
+            size="md"
+            class="header-navbar__form-input"
+            :placeholder="$t('menu.searchInput')"
+          ></b-form-input>
+          <b-button variant="dark" size="md" class="header-navbar__form-btn" type="submit">{{
+            $t('menu.search')
+          }}</b-button>
         </b-nav-form>
 
         <!-- <b-nav-item-dropdown right>
@@ -73,7 +85,7 @@ export default defineComponent({
   },
   data() {
     return {
-      collapse: null
+      collapse: false
     };
   },
   components: {
@@ -81,8 +93,9 @@ export default defineComponent({
   },
   setup() {
     // const user = useUser();
+    // const visible = ref(true);
     return {
-      // user
+      // visible
     };
   },
   computed: {
@@ -185,30 +198,43 @@ export default defineComponent({
     flex-direction: row;
 
     .nav-item {
-      margin-right: 4px;
+      margin-right: 12px;
     }
   }
 
   .header-navbar__collapse-right {
     justify-content: flex-start;
+    /* align-items: space-between; */
     display: flex;
     flex-wrap: nowrap;
-    flex-direction: row;
+    flex-direction: row-reverse;
 
     form {
       flex-grow: 1;
       max-height: 38px;
-      width: 50%;
+      width: 40%;
+      margin-right: auto;
+      margin-left: 0;
     }
     .nav-item {
+      max-width: 150px;
+      margin-left: auto;
+      margin-right: 0;
       &.dropdown.languages {
+        justify-content: flex-end;
         flex-direction: row;
+
         width: auto;
         display: flex;
-        justify-self: flex-start;
+        /* justify-self: flex-start; */
 
         .dropdown-toggle {
+          text-align: right;
           display: block;
+
+          &.btn {
+            text-align: right;
+          }
         }
       }
       &.dropdown .btn-group {

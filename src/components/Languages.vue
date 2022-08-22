@@ -50,7 +50,6 @@ export default defineComponent({
     });
 
     const updateValue = (event: Event) => {
-      // const HTMLSelectElement: EventTarget | null
       const target: EventTarget | null = event.target;
       const { value }: any = target;
 
@@ -103,11 +102,6 @@ export default defineComponent({
     onMounted(() => {
       useI18nParam();
       initNavbarValue(localLang);
-      // if (localLang === selectedValue.value) {
-      //   initNavbarValue(selectedValue.value);
-      // } else {
-      //   initNavbarValue(localLang);
-      // }
     });
 
     return {

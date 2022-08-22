@@ -1,17 +1,39 @@
 <template>
   <div class="words">
-    <b-tabs v-model="tabIndex" content-class="mt-3" nav-wrapper-class="words__tab" lazy>
+    <b-tabs
+      v-model="tabIndex"
+      nav-class="words__tab-nav"
+      active-nav-item-class="words__tab-nav--active"
+      active-tab-class="words__tab--active"
+      content-class="mt-3"
+      nav-wrapper-class="words__tab container px-4 "
+      :lazy="true"
+    >
       <b-tab
-        class="words__tab"
+        class="words__tab px-4 mx-auto container"
+        title-item-class="words__tab-title"
+        href="#"
         v-for="(item, i, num) in getSectionsList"
         :key="i"
         :title-link-class="linkClass(num)"
         :title="headerTitle(i)"
-        lazy
+        :lazy="true"
       >
-        <word-list :title="i" :data-words="item" />
+        <word-list @dialog="handlerAlertSuccess" :title="i" :data-words="item" />
       </b-tab>
     </b-tabs>
+    <div class="words__alerts">
+      <b-alert
+        v-model="dismissCountDown"
+        dismissible
+        @dismissed="dismissCountDown = 0"
+        @dismiss-count-down="countDownChanged"
+        :show="dismissCountDown"
+        fade
+        :variant="typeAlert"
+        >{{ textAlertComplete }}</b-alert
+      >
+    </div>
   </div>
 </template>
 
@@ -27,13 +49,19 @@ export default defineComponent({
   },
   data() {
     return {
-      tabIndex: 0
+      tabIndex: 0,
+      showAlert: false,
+      dismissSecs: 5,
+      dismissCountDown: 0,
+      typeAlert: 'success',
+      textAlert: 'Done'
     };
   },
   computed: {
     ...mapGetters({
       getSectionsList: 'getSectionsList',
       getSectionsTitles: 'getSectionsTitles',
+      getClipboardData: 'getClipboardData',
       getTabActive: 'getTabActive'
     }),
     listIndex() {
@@ -42,6 +70,10 @@ export default defineComponent({
     },
     listTitles() {
       const listValues: any = Object.values(this.getSectionsTitles);
+      return listValues;
+    },
+    textAlertComplete() {
+      const listValues: any = `${this.typeAlert[0].toUpperCase()}${this.typeAlert.slice(1)} (${this.textAlert}) COPY!`;
       return listValues;
     }
   },
@@ -62,6 +94,16 @@ export default defineComponent({
     ...mapActions({
       setTabActive: 'setTabActive'
     }),
+    countDownChanged(dismissCountDown: any) {
+      this.dismissCountDown = dismissCountDown;
+    },
+    handlerAlertSuccess(event: Event) {
+      this.typeAlert = event.type;
+      this.textAlert = this.getClipboardData;
+
+      this.showAlert = true;
+      this.dismissCountDown = this.dismissSecs;
+    },
     headerTitle(idx: any) {
       return this.getSectionsTitles[idx];
     },
@@ -83,6 +125,18 @@ export default defineComponent({
 <style lang="scss">
 .words__tab {
   //
+}
+
+.words {
+  position: relative;
+  &__alerts {
+    position: fixed;
+    top: 15px;
+    left: 50%;
+    transform: translateX(-50%);
+    max-width: 60vw;
+    width: 100%;
+  }
 }
 
 .words__nav-link {

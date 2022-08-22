@@ -14,13 +14,6 @@ export const i18nUtils = (app: App) => {
   };
 };
 
-export const useLocalizedUrl = () => {
-  const internalInstance: any = getCurrentInstance();
-  const { localizedUrl } = internalInstance.appContext.config.globalProperties;
-
-  return localizedUrl;
-};
-
 export const useI18nParam = () => {
   const route = useRoute();
   const i18n = useI18n();
@@ -34,8 +27,14 @@ export const useI18nParam = () => {
     localStorage.setItem('lang', lang.value);
   });
   i18n.locale.value = lang.value;
-  // localStorage.setItem('lang', i18n.locale.value);
   return lang.value;
+};
+
+export const useLocalizedUrl = () => {
+  const internalInstance: any = getCurrentInstance();
+  const { localizedUrl } = internalInstance.appContext.config.globalProperties;
+
+  return localizedUrl;
 };
 
 declare module '@vue/runtime-core' {

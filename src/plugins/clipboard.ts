@@ -1,26 +1,23 @@
 import { App } from 'vue';
-import { VueClipboard } from '@soerenmartius/vue3-clipboard';
+import { VueClipboard, toClipboard } from '@soerenmartius/vue3-clipboard';
 
 export default {
   install: (app: App) => {
+    // app.use(VueClipboard);
+    // const copyTo = toClipboard();
+    app.use(VueClipboard, {
+      autoSetContainer: true,
+      appendToBody: true,
+    });
 
-		app.use(VueClipboard)
-    // const copyTo = toClipboard;
-    // app.use(VueClipboard, {
-    //   autoSetContainer: true,
-    //   appendToBody: true,
-    // });
-
-    // const copyTo = async function (text: string, action: any) {
-    //   await toClipboard(text, action);
-    // };
-
-    // app.config.globalProperties.$copyTo = copyTo;
+    const copyTo = (app.config.globalProperties.$copyTo = async (text: string, action: any) => {
+      return await toClipboard(text, action);
+    });
   },
 };
 
-// declare module '@vue/runtime-core' {
-//   interface ComponentCustomProperties {
-//     $copyTo: any;
-//   }
-// }
+declare module '@vue/runtime-core' {
+  interface ComponentCustomProperties {
+    $copyTo: any;
+  }
+}

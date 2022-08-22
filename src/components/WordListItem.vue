@@ -1,18 +1,23 @@
 <template>
-  <b-list-group-item href="#" class="word-list-item flex flex-row justify-between w-full">
+  <b-list-group-item class="word-list-item flex flex-row justify-between w-full" :button="true" v-clipboard:copy="text">
     <div class="flex-auto w-full">
-      <p class="word-list-item__paragraph" ref="contentListItem"></p>
+      <p class="word-list-item__paragraph" ref="contentListItem">
+        {{ text }}
+      </p>
     </div>
-    <div class="flex-auto flex justify-end w-28">
-      <b-button :disabled="true" variant="danger" class="word-list-item__button" @click="doDelete">
-        Delete
-        <!-- <b-icon icon="trash-fill" aria-hidden="true"></b-icon> -->
+    <div class="flex-auto flex justify-end w-10 ml-2">
+      <b-button title="Delete" :disabled="true" variant="danger" class="word-list-item__button" @click="doDelete">
+        <b-icon-file-earmark-x-fill v-bind="iconsAttrs" />
       </b-button>
     </div>
-    <div class="flex-auto flex justify-end w-28">
-      <b-button variant="success" class="word-list-item__button" @click="doCopy">
-        Copy
-        <!-- <b-icon icon="journals" aria-hidden="true"></b-icon> -->
+    <div class="flex-auto flex justify-end w-10 ml-2">
+      <b-button title="Clear" variant="warning" class="word-list-item__button" @click="doClear">
+        <b-icon-eraser-fill v-bind="iconsAttrs" />
+      </b-button>
+    </div>
+    <div class="flex-auto flex justify-end w-10 ml-2">
+      <b-button title="Copy" variant="success" class="word-list-item__button" @click="doCopy">
+        <b-icon-clipboard-data v-bind="iconsAttrs" />
       </b-button>
     </div>
   </b-list-group-item>
@@ -20,12 +25,7 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import useToCopy from '@/composables/useToCopy';
-
-// import { useStore } from "vuex";
-
-// const { setData } = useActions(['setData'])
-
+import useToCopy, { toClipboard } from '@/composables/useToCopy';
 import { useTextInClipboard } from '@/utils/utils';
 
 export default defineComponent({
@@ -50,6 +50,11 @@ export default defineComponent({
       // isDblClick: false,
       isLoading: false,
       isSetText: '',
+      iconsAttrs: {
+        width: '1.5em',
+        height: '1.5em',
+        viewBox: '0 0 16 16'
+      },
       dialogs: {
         delete: false
       }
@@ -57,7 +62,7 @@ export default defineComponent({
     };
   },
   mounted() {
-    this.setText(this.text);
+    // this.setText(this.text);
   },
   updated() {
     // const dataValue: any = initClipboardData();
@@ -94,10 +99,8 @@ export default defineComponent({
       try {
         const { contentListItem = '' }: any = this.$refs;
         this.isLoading = true;
-        const tetx = contentListItem?.innerHTML;
-        await useToCopy(tetx);
-        // await this.$copyText(this.$refs.contentListItem.innerHTML)
-        await this.$emit('dialog', { type: 'success' });
+        await useToCopy(this.text, contentListItem);
+        await this.$emit('dialog', { type: 'success', text: this.text });
         this.isLoading = false;
       } catch (error) {
         this.$emit('dialog', { type: 'danger' });
@@ -112,6 +115,19 @@ export default defineComponent({
       } catch (error) {
         this.$emit('dialog', 'error');
       }
+    },
+
+    async doClear() {
+      try {
+        this.isLoading = true;
+        const res = await this.$copyTo(this.text, 'cut');
+        console.log('✅ 🧊 ~ res', res);
+        // this.$emit('dialog', 'success');
+        this.isLoading = false;
+      } catch (error) {
+        this.isLoading = false;
+        this.$emit('dialog', 'error');
+      }
     }
   }
 });
@@ -122,42 +138,34 @@ export default defineComponent({
   justify-self: flex-start;
   flex-wrap: nowrap;
 
-  &__button {
-    &button.btn {
-      @apply bg-green-600;
-    }
+  &__paragraph {
+    text-align: left;
+    width: 100%;
+    display: inline-block;
   }
 }
 
 .word-list-item__button {
-  height: 24px;
+  height: 34px;
   min-height: 34px;
-  width: 54px;
-  min-width: 54px;
-  padding: 2px 0;
-  font-size: 12px;
-  /* line-height: 20px; */
-}
+  width: 34px;
+  min-width: 34px;
+  padding: 4px 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 4px;
 
-.word-list-item__button.btn-danger {
-  /* background-color: var(--bs-red); */
-  @apply bg-red-600 hover:bg-red-700;
-}
+  &.btn-danger {
+    @apply bg-red-500 hover:bg-red-600;
+  }
 
-.word-list-item__button.btn-warning {
-  /* background-color: var(--bs-red); */
-  @apply bg-orange-600 hover:bg-orange-700;
-}
+  &.btn-warning {
+    @apply bg-orange-400 hover:bg-orange-500 text-white;
+  }
 
-.word-list-item__button.btn-success {
-  /* background-color: var(--bs-green); */
-  @apply bg-green-600 hover:bg-green-700;
-}
-
-.word-list-item__paragraph {
-  text-align: left;
-  /* width: fit-content; */
-  width: 100%;
-  display: inline-block;
+  &.btn-success {
+    @apply bg-green-500 hover:bg-green-700;
+  }
 }
 </style>
