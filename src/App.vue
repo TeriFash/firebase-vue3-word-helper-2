@@ -1,12 +1,17 @@
 <template>
   <header-navbar :signed-in="isSignedIn" />
   <Suspense>
-    <router-view />
+    <router-view v-slot="{ Component }">
+      <transition name="fade">
+        <component :is="Component" />
+      </transition>
+    </router-view>
   </Suspense>
 </template>
 
 <script lang="ts">
 import { defineComponent, computed, onMounted } from 'vue';
+import { RouterLink, RouterView } from 'vue-router';
 import { useUser, useIsSignedIn, initClipboardData } from '@/utils/utils';
 // import { useLocalizedUrl } from '@/i18n/utils';
 
@@ -42,7 +47,8 @@ body {
 }
 
 #app {
-  @apply font-sans antialiased text-center text-gray-700;
+  @apply font-sans antialiased text-center text-gray-700 w-full;
+  /* @apply max-w-screen-lg mt-16 mb-20 px-8 mx-auto pb-24 sm:mt-28 sm:px-16 slg:px-24 lg:mt-48 lg:mt-58; */
 
   a {
     @apply cursor-pointer;
