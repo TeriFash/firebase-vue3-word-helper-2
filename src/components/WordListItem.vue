@@ -56,7 +56,25 @@ export default defineComponent({
         viewBox: '0 0 16 16'
       },
       dialogs: {
-        delete: false
+        delete: false,
+        alert: {
+          success: {
+            eventType: 'alert',
+            type: 'success'
+          },
+          info: {
+            eventType: 'alert',
+            type: 'info'
+          },
+          warning: {
+            eventType: 'alert',
+            type: 'warning'
+          },
+          error: {
+            eventType: 'alert',
+            type: 'danger'
+          }
+        }
       }
       // useToCopy: useToCopy()
     };
@@ -101,9 +119,11 @@ export default defineComponent({
         this.isLoading = true;
         await useToCopy(this.text, contentListItem);
         await this.$emit('dialog', { type: 'success', text: this.text });
+        this.$emitter.emit('global-notifications-action', { ...this.dialogs.alert.success, text: this.text });
         this.isLoading = false;
       } catch (error) {
         this.$emit('dialog', { type: 'danger' });
+        this.$emitter.emit('global-notifications-action', { ...this.dialogs.alert.error, text: this.text });
         this.isLoading = false;
       }
     },
@@ -111,9 +131,11 @@ export default defineComponent({
       try {
         // await this.deleteWord({ id: this.textKey[0], section: this.tabActive })
         // await this.$copyText(this.$refs.contentListItem.innerHTML)
+				this.$emitter.emit('global-notifications-action', { ...this.dialogs.alert.warning, text: this.text });
         this.$emit('dialog', 'success');
       } catch (error) {
         this.$emit('dialog', 'error');
+				this.$emitter.emit('global-notifications-action', { ...this.dialogs.alert.error, text: this.text });
       }
     },
 
@@ -121,12 +143,13 @@ export default defineComponent({
       try {
         this.isLoading = true;
         const res = await this.$copyTo(this.text, 'cut');
-        console.log('✅ 🧊 ~ res', res);
+        this.$emitter.emit('global-notifications-action', { ...this.dialogs.alert.success, text: this.text });
         // this.$emit('dialog', 'success');
         this.isLoading = false;
       } catch (error) {
         this.isLoading = false;
         this.$emit('dialog', 'error');
+        this.$emitter.emit('global-notifications-action', { ...this.dialogs.alert.error, text: this.text });
       }
     }
   }

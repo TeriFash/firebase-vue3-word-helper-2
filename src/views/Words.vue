@@ -19,21 +19,10 @@
         :title="headerTitle(i)"
         :lazy="true"
       >
-        <word-list @dialog="handlerAlertSuccess" :title="i" :data-words="item" />
+        <word-list :title="i" :data-words="item" />
       </b-tab>
     </b-tabs>
-    <div class="words__alerts">
-      <b-alert
-        v-model="dismissCountDown"
-        dismissible
-        @dismissed="dismissCountDown = 0"
-        @dismiss-count-down="countDownChanged"
-        :show="dismissCountDown"
-        fade
-        :variant="typeAlert"
-        >{{ textAlertComplete }}</b-alert
-      >
-    </div>
+
   </div>
 </template>
 
@@ -94,16 +83,6 @@ export default defineComponent({
     ...mapActions({
       setTabActive: 'setTabActive'
     }),
-    countDownChanged(dismissCountDown: any) {
-      this.dismissCountDown = dismissCountDown;
-    },
-    handlerAlertSuccess(event: Event) {
-      this.typeAlert = event.type;
-      this.textAlert = this.getClipboardData;
-
-      this.showAlert = true;
-      this.dismissCountDown = this.dismissSecs;
-    },
     headerTitle(idx: any) {
       return this.getSectionsTitles[idx];
     },

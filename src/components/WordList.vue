@@ -23,6 +23,10 @@ export default defineComponent({
     title: {
       type: [String],
       default: ''
+    },
+    wordData: {
+      type: [Object],
+      default: () => ({})
     }
   },
   emits: ['dialog'],

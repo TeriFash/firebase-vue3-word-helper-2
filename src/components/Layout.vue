@@ -3,20 +3,23 @@
     <!-- <template v-if="$store.state.tabActive"> {{ $store.state.sectionsTitles[$store.state.tabActive] }}!! </template> -->
     <theme-switcher />
     <router-view />
+    <notifications />
   </div>
 </template>
 
 <script lang="ts">
-import { defineComponent, reactive, onMounted } from 'vue';
+import { defineComponent, reactive, ref, onMounted, onBeforeUnmount, defineAsyncComponent } from 'vue';
 import { useStore } from 'vuex';
 import { currentTheme, initTheme, switchTheme } from '@/composables/useTheme';
 
 import { auth, firebaseBdDataSetStore } from '@/utils/firebase';
 import { User } from 'firebase/auth';
 
-// import { useI18nParam } from '@/i18n/utils';
+import { initClipboardData } from '@/utils/utils'; //useI18nParam
 
-import ThemeSwitcher from '@/components/ThemeSwitcher.vue';
+// import ThemeSwitcher from '@/components/ThemeSwitcher.vue';
+const ThemeSwitcher = defineAsyncComponent(() => import('@/components/ThemeSwitcher.vue'));
+const Notifications = defineAsyncComponent(() => import('@/components/Notifications.vue'));
 
 interface UserData {
   user: User | null;
@@ -25,12 +28,27 @@ interface UserData {
 export default defineComponent({
   name: 'AppLayout',
   components: {
-    ThemeSwitcher
+    ThemeSwitcher,
+    Notifications
   },
   async setup() {
     const store = useStore();
     const user = reactive<UserData>({ user: null });
+    const polling: any = ref('');
 
+    const onClipParse = async () => {
+      polling.value = await setInterval(() => {
+        initClipboardData();
+        const dataLocal: any = localStorage.getItem('textInClipboard');
+        console.log('✅ 🧊 ~ dataLocal', dataLocal);
+      }, 4000);
+    };
+    const setFocused = () => {
+      onClipParse();
+    };
+    const setBlurred = () => {
+      clearInterval(polling.value);
+    };
     const setSectionsData = async () => {
       try {
         const dataLocal: any = localStorage.getItem('sections');
@@ -46,8 +64,17 @@ export default defineComponent({
       }
     };
 
+    onBeforeUnmount(() => {
+      window.removeEventListener('focus', setFocused);
+      window.removeEventListener('blur', setBlurred);
+    });
+
     onMounted(() => {
+      window.addEventListener('focus', setFocused);
+      window.addEventListener('blur', setBlurred);
+
       setSectionsData();
+      onClipParse();
       initTheme();
 
       auth.onAuthStateChanged((fbuser) => {
