@@ -1,14 +1,14 @@
 import { initializeApp } from 'firebase/app';
 import { getAuth } from 'firebase/auth';
 import { getFunctions } from 'firebase/functions';
-import { getFirestore, collection, getDocs } from 'firebase/firestore'; //Timestamp
+import { getFirestore, collection, getDocs, serverTimestamp } from 'firebase/firestore'; //Timestamp
 import { firebaseConfig } from '../config/project';
 
 const firebaseApp = initializeApp(firebaseConfig);
 
 export const db = getFirestore(firebaseApp);
 export const auth = getAuth(firebaseApp);
-
+export const projectTimeStamp = serverTimestamp;
 // eslint-disable-next-line @typescript-eslint/ban-types
 export async function firebaseBdDataSetStore(): Promise<[] | undefined> {
   try {

@@ -22,7 +22,7 @@ export default createStore<State>({
     setUser(state: State, user: User | null) {
       state.user = user;
     },
-		setTabActive(state: State, active) {
+    setTabActive(state: State, active) {
       state.tabActive = active;
     },
     loadSections(state: State, data) {
@@ -39,12 +39,12 @@ export default createStore<State>({
       state.sectionsTitles = titles;
     },
     loadClipboardData(state: State, data) {
-      const statusCheck = state.textInClipboard === data;
+      // const statusCheck = state.textInClipboard === data;
 
-      if (!statusCheck) {
-        state.textInClipboard = data;
-        localStorage.setItem('textInClipboard', data);
-      }
+      // if (!statusCheck) {
+      state.textInClipboard = data;
+      localStorage.setItem('textInClipboard', data);
+      // }
     },
   },
   getters: {
@@ -80,9 +80,9 @@ export default createStore<State>({
       }
     },
     setTabActive({ commit }, payload) {
-			commit('setTabActive', payload);
-		},
-    setSetionData({ commit }, payload) {
+      commit('setTabActive', payload);
+    },
+    setSectionData({ commit }, payload) {
       try {
         const { simple, rare, accompanying }: any = payload;
         const titles: any = {};
@@ -96,15 +96,11 @@ export default createStore<State>({
         console.error(error);
       }
     },
-    setClipboardData: async ({ commit }, payload) => {
+    fetchClipboardData: async ({ commit }) => {
       try {
         let result = '';
-        const textInClipboard: string | any = localStorage.getItem('textInClipboard');
-        const textCheck = payload.split(' ');
-
-        if (payload === textInClipboard) {
-          return;
-        }
+        const text = await window.navigator.clipboard.readText();
+        const textCheck: string[] = text.split(' ');
 
         if (textCheck.length <= 2) {
           result = textCheck[0];
@@ -113,8 +109,25 @@ export default createStore<State>({
         }
 
         commit('loadClipboardData', result);
+        // return result;
+      } catch (error) {
+        console.error(error);
+      }
+    },
+    setClipboardData: async ({ commit, getters }, payload) => {
+      try {
+        let result = '';
+        // const { getClipboardData } = getters;
+        const text = await window.navigator.clipboard.readText();
+        const textCheck = payload.split(' ');
 
-        // if (payload) commit('loadClipboardData', !payload ? payload : '');
+        if (textCheck.length <= 2) {
+          result = textCheck[0];
+        } else {
+          result = textCheck[0] || textCheck[1];
+        }
+
+        commit('loadClipboardData', result);
         return result;
       } catch (error) {
         console.error(error);

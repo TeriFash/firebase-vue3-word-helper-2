@@ -1,5 +1,6 @@
 import { computed } from 'vue';
 import { useStore } from 'vuex';
+import { firebaseBdDataSetStore } from '@/utils/firebase';
 
 export const useUser = () => {
   const store = useStore();
@@ -35,5 +36,31 @@ export const initClipboardData = async () => {
     return result;
   } catch (error) {
     // console.error(error);
+  }
+};
+export const updateClipboardData = async (value: any) => {
+  try {
+    const store = useStore();
+    const result = await store.dispatch('setClipboardData', value);
+    return result;
+  } catch (error) {
+    // console.error(error);
+  }
+};
+export const useSetSectionsData = async () => {
+  try {
+    const store = useStore();
+    const dataLocal: any = localStorage.getItem('sections');
+
+    if (JSON.parse(dataLocal)) {
+      const result = await store.dispatch('setSectionData', JSON.parse(dataLocal));
+      return result;
+    } else {
+      const data: any[] | undefined = await firebaseBdDataSetStore();
+      const result = await store.dispatch('setSectionData', data);
+      return result;
+    }
+  } catch (error) {
+    console.error('useSetSectionsData', error);
   }
 };

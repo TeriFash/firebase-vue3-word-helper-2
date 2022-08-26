@@ -11,8 +11,8 @@ import {
 } from 'bootstrap-icons-vue';
 // import { IconsPlugin } from 'bootstrap-vue';
 // import 'bootstrap/dist/css/bootstrap.css';
-import 'bootstrap-vue-3/dist/bootstrap-vue-3.css';
 import 'bootstrap-vue/dist/bootstrap-vue.css';
+import 'bootstrap-vue-3/dist/bootstrap-vue-3.css';
 
 export default {
   install: (app: App) => {
