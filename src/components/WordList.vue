@@ -1,9 +1,9 @@
 <template>
   <!-- <h1 class="font-bold text-3xl text-gray-700 mt-8">{{ headerTitle }} !</h1> -->
-  <b-list-group :flush="true" class="word-list mx-auto word-list__container mt-4">
+  <b-list-group class="word-list">
     <word-list-item
-      @dialog="$emit('dialog', $event)"
-      v-for="(item, i) in getSectionsList[title]"
+      class="word-list__item"
+      v-for="(item, i) in data"
       :handler="i"
       :key="i"
       :text="setText(item)"
@@ -15,7 +15,7 @@
 import { defineComponent } from 'vue';
 import { mapGetters } from 'vuex';
 import { useTextInClipboard } from '@/utils/utils';
-import WordListItem from '@/components/WordListItem.vue';
+import WordListItem from '@cc/WordListItem.vue';
 
 export default defineComponent({
   name: 'WordList',
@@ -24,12 +24,11 @@ export default defineComponent({
       type: [String],
       default: ''
     },
-    wordData: {
-      type: [Object],
+    data: {
+      type: Object,
       default: () => ({})
     }
   },
-  emits: ['dialog'],
   data() {
     return {};
   },
@@ -45,7 +44,9 @@ export default defineComponent({
       getSectionsTitles: 'getSectionsTitles'
     }),
     headerIndex() {
-      return Object.keys(this.getSectionsList).findIndex((e) => e === this.title);
+      return Object.keys(this.getSectionsList).findIndex(
+        (e) => e === this.title
+      );
     },
     headerTitle() {
       return this.getSectionsTitles[this.title];
@@ -58,6 +59,7 @@ export default defineComponent({
     },
     setText(val: string) {
       const { value }: any = useTextInClipboard();
+      let text;
       const opt = {
         name: '{ }',
         nameCompany: '{ $2 }',
@@ -66,10 +68,22 @@ export default defineComponent({
         time: '{ $time }'
       };
       const headerFixer = this.firstWordUppercase(value);
-      const text = val.replace(opt.name, headerFixer);
+      text = val.replace(opt.name, headerFixer);
+      if (this.title === 'rare') {
+        return text.split(' ').slice(1).join(' ');
+      }
 
       return text;
     }
   }
 });
 </script>
+<styles scoped lang="scss">
+.word-list {
+  @apply mx-auto;
+
+  &__item {
+    @apply mx-auto py-4 hover:bg-gray-200;
+  }
+}
+</styles>

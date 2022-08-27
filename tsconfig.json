@@ -16,16 +16,24 @@
     "baseUrl": ".",
     "types": ["webpack-env"],
     "paths": {
-      "@/*": ["src/*"]
+      "@/*": ["src/*"],
+			"@utils/*": ["src/utils/*"],
+      "@plugins/*": ["src/plugins/*"],
+			"@components/*": ["src/components/*"],
+			"@cc/*": ["src/components/*"],
+			"@use/*": ["src/composables/*"]
     },
+    "typeRoots": ["node_modules/@types", "src/types"],
     "lib": ["esnext", "dom", "dom.iterable", "scripthost"]
   },
   "include": [
     "src/**/*.ts",
     "src/**/*.tsx",
     "src/**/*.vue",
+		"src/**/*.d.ts",
     "tests/**/*.ts",
-    "tests/**/*.tsx"
+    "tests/**/*.tsx",
+    "./auto-imports.d.ts"
   ],
   "exclude": ["node_modules"]
 }

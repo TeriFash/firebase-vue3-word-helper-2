@@ -1,49 +1,58 @@
 <template>
-  <div class="words">
-    <b-tabs
-      v-model="tabIndex"
-      nav-class="words__tab-nav"
-      active-nav-item-class="words__tab-nav--active"
-      active-tab-class="words__tab--active"
-      content-class="mt-3"
-      nav-wrapper-class="words__tab container px-4 "
+  <b-tabs
+    class="words"
+    v-model="tabIndex"
+    nav-class="words__tab-nav"
+    active-nav-item-class="words__tab-nav--active"
+    active-tab-class="words__tab--active"
+    content-class="words__tab--content"
+    nav-wrapper-class="words__tab-nav--wrapper"
+    :lazy="true"
+  >
+    <b-tab
+      class="words__tab"
+      title-item-class="words__tab-title"
+      href="#"
+      v-for="(item, i, num) in getSectionsList"
+      :key="i"
+      :active="num === tabIndex"
+      :title-link-class="[
+        'words__nav-link',
+        `words__nav-link--${currentTheme}`
+      ]"
       :lazy="true"
     >
-      <b-tab
-        class="words__tab px-4 mx-auto container"
-        title-item-class="words__tab-title"
-        href="#"
-        v-for="(item, i, num) in getSectionsList"
-        :key="i"
-        :title-link-class="linkClass(num)"
-        :title="headerTitle(i)"
-        :lazy="true"
-      >
-        <word-list :title="i" :data-words="item" />
-      </b-tab>
-    </b-tabs>
-
-  </div>
+      <template #title>
+        <h5 class="mb-1">{{ headerTitle(i) }}</h5>
+        <b-badge :variant="num === tabIndex ? 'success' : 'disabled'" pill>{{
+          item.length
+        }}</b-badge>
+      </template>
+      <template #default>
+        <word-list :title="i" :data="getSearchedData" />
+      </template>
+    </b-tab>
+  </b-tabs>
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue';
 import { mapGetters, mapActions } from 'vuex';
-import WordList from '@/components/WordList.vue';
+import { useTabActive } from '@utils/utils';
+import { currentTheme } from '@use/useTheme';
+import WordList from '@cc/WordList.vue';
 
 export default defineComponent({
   name: 'Words',
   components: {
     WordList
   },
+  setup() {
+    return { currentTheme };
+  },
   data() {
     return {
-      tabIndex: 0,
-      showAlert: false,
-      dismissSecs: 5,
-      dismissCountDown: 0,
-      typeAlert: 'success',
-      textAlert: 'Done'
+      search: '',
+      tabIndex: 0
     };
   },
   computed: {
@@ -61,23 +70,39 @@ export default defineComponent({
       const listValues: any = Object.values(this.getSectionsTitles);
       return listValues;
     },
-    textAlertComplete() {
-      const listValues: any = `${this.typeAlert[0].toUpperCase()}${this.typeAlert.slice(1)} (${this.textAlert}) COPY!`;
-      return listValues;
+    getSearchedData(): any {
+      const list: any = Object.values(this.getSectionsList);
+      if (this.search === '') return list[this.tabIndex];
+      return list[this.tabIndex].filter((item: any) =>
+        (item || '').toLowerCase().includes(this.search.toLowerCase())
+      );
     }
   },
   watch: {
-    tabIndex(value, oldValue) {
-      if (value !== oldValue) {
-        this.setIndexTabActive(value);
+    tabIndex: {
+      immediate: false,
+      handler(value, oldValue) {
+        if (value !== oldValue) {
+          this.setIndexTabActive(value);
+        }
       }
     }
   },
   created() {
-    this.setIndexTabActive(this.tabIndex);
+    if (!this.getTabActive.index) {
+      this.tabIndex = useTabActive().value.index;
+      this.setIndexTabActive(this.tabIndex);
+    } else {
+      this.tabIndex = this.getTabActive.index;
+    }
+  },
+  mounted() {
+    this.$emitter.on('global-search-action', (event: any) => {
+      this.search = event;
+    });
   },
   beforeMount() {
-    this.setIndexTabActive(this.tabIndex);
+    // this.setIndexTabActive(this.tabIndex);
   },
   methods: {
     ...mapActions({
@@ -88,41 +113,77 @@ export default defineComponent({
     },
     setIndexTabActive(idx: any) {
       const listKeys: any = Object.keys(this.getSectionsList);
-      this.setTabActive(listKeys[idx]);
-    },
-    linkClass(idx: any) {
-      if (this.tabIndex === idx) {
-        return ['words__nav-link', 'bg-success', 'text-light'];
-      } else {
-        return ['words__nav-link', 'bg-light', 'text-gray-600'];
-      }
+      this.setTabActive({ index: idx, name: listKeys[idx] });
     }
   }
 });
 </script>
 
 <style lang="scss">
-.words__tab {
-  //
-}
-
 .words {
-  position: relative;
-  &__alerts {
-    position: fixed;
-    top: 15px;
-    left: 50%;
-    transform: translateX(-50%);
-    max-width: 60vw;
-    width: 100%;
+  button.words__nav-link {
+    @apply text-gray-600 hover:text-green-600;
+
+    &.words__tab-nav--active {
+      @apply bg-green-600 text-white hover:text-white;
+    }
   }
-}
 
-.words__nav-link {
-  @apply hover:text-gray-600;
+  & .nav-tabs .nav-link.active.words__nav-link--dark {
+    @apply border-green-600 bg-green-600 text-white hover:text-white;
+  }
 
-  &.active {
-    @apply text-gray-600 hover:text-gray-600 bg-green-600;
+  & .nav-tabs .nav-link.words__nav-link--dark {
+    @apply border-gray-800 bg-gray-600 text-white hover:text-white;
+  }
+
+  &__tab {
+    @apply container px-6;
+
+    &--content {
+      /* @apply mx-auto; */
+    }
+  }
+
+  &__tab-nav--wrapper {
+    @apply px-6;
+  }
+
+  &__tab-nav {
+    border-width: 0;
+    &--active {
+    }
+  }
+
+  &__nav-link {
+    position: relative;
+    display: flex;
+    h5 {
+      @apply font-bold text-gray-400;
+    }
+
+    &.active {
+      h5 {
+        @apply font-bold text-white;
+      }
+    }
+
+    .badge {
+      margin-left: 10px;
+    }
+
+    .badge.bg-success {
+    }
+
+    .badge.bg-disabled {
+      @apply bg-gray-200 font-bold text-gray-400 hover:text-gray-600;
+    }
+
+    &--dark {
+      &.active {
+        @apply border-green-600 bg-green-600 text-white hover:text-white;
+      }
+    }
   }
 }
 </style>

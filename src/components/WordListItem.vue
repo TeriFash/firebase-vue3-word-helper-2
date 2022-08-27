@@ -1,23 +1,43 @@
 <template>
-  <b-list-group-item class="word-list-item flex flex-row justify-between w-full" :button="true" v-clipboard:copy="text">
-    <div class="flex-auto w-full">
-      <p class="word-list-item__paragraph" ref="contentListItem">
+  <b-list-group-item
+    class="word-list-item"
+    :href="path"
+    :action="true"
+    :button="true"
+    @click.prevent="toSelect"
+  >
+    <div class="word-list-item__left">
+      <p
+        class="word-list-item__paragraph"
+        ref="contentListItem"
+        v-clipboard:copy="text"
+        :id="`text-${handler}`"
+      >
         {{ text }}
       </p>
     </div>
-    <div class="flex-auto flex justify-end w-10 ml-2">
-      <b-button title="Delete" :disabled="true" variant="danger" class="word-list-item__button" @click="doDelete">
-        <b-icon-file-earmark-x-fill v-bind="iconsAttrs" />
-      </b-button>
-    </div>
-    <div class="flex-auto flex justify-end w-10 ml-2">
-      <b-button title="Clear" variant="warning" class="word-list-item__button" @click="doClear">
-        <b-icon-eraser-fill v-bind="iconsAttrs" />
-      </b-button>
-    </div>
-    <div class="flex-auto flex justify-end w-10 ml-2">
-      <b-button title="Copy" variant="success" class="word-list-item__button" @click="doCopy">
-        <b-icon-clipboard-data v-bind="iconsAttrs" />
+    <div class="word-list-item__right">
+      <b-button
+        v-for="(btn, i) in btnList"
+        :key="i"
+        :class="btn.class"
+        @click="doAction(btn.action)"
+        :title="btn.title"
+        :variant="`${btn.variant}`"
+        :disabled="btn.disabled"
+      >
+        <b-icon-file-earmark-x-fill
+          v-if="btn.variant === 'danger'"
+          v-bind="iconsAttrs"
+        />
+        <b-icon-eraser-fill
+          v-if="btn.variant === 'warning'"
+          v-bind="iconsAttrs"
+        />
+        <b-icon-clipboard-data
+          v-if="btn.variant === 'success'"
+          v-bind="iconsAttrs"
+        />
       </b-button>
     </div>
   </b-list-group-item>
@@ -30,7 +50,6 @@ import { useTextInClipboard } from '@/utils/utils';
 
 export default defineComponent({
   name: 'WordListItem',
-  events: ['dialog'],
   props: {
     handler: {
       type: String,
@@ -47,7 +66,6 @@ export default defineComponent({
   },
   data() {
     return {
-      // isDblClick: false,
       isLoading: false,
       isSetText: '',
       iconsAttrs: {
@@ -56,7 +74,6 @@ export default defineComponent({
         viewBox: '0 0 16 16'
       },
       dialogs: {
-        delete: false,
         alert: {
           success: {
             eventType: 'alert',
@@ -76,54 +93,95 @@ export default defineComponent({
           }
         }
       }
-      // useToCopy: useToCopy()
     };
   },
   mounted() {
-    // this.setText(this.text);
+    //
   },
   updated() {
-    // const dataValue: any = initClipboardData();
-    // const { value }: any = useTextInClipboard();
-    // if (this.isSetText !== value) {
-    //   this.setText(this.text);
-    // }
+    //
+  },
+  computed: {
+    path() {
+      return `${this.$route.path}#${this.handler}`;
+    },
+    btnList() {
+      return [
+        {
+          title: 'Delete',
+          variant: 'danger',
+          action: 'delete',
+          disabled: true,
+          class: 'word-list-item__button'
+        },
+        {
+          title: 'Clear',
+          variant: 'warning',
+          action: 'copy',
+          disabled: false,
+          class: 'word-list-item__button'
+        },
+        {
+          title: 'Copy',
+          variant: 'success',
+          action: 'copy',
+          disabled: false,
+          class: 'word-list-item__button'
+        }
+      ];
+    }
   },
   methods: {
-    firstWordUppercase(val: string) {
-      if (!val) return '<span class="mark text-gray-400">{ name }</span>';
-      return `${val[0].toUpperCase()}${val.slice(1)}`;
+    toSelect() {
+      let doc: Document | any = document;
+      let text = doc.getElementById(
+        `text-${this.handler}`
+      ) as HTMLElement | null;
+      if (doc.body.createTextRange) {
+        const range: any = doc.body.createTextRange();
+        range.moveToElementText(text);
+        range.select();
+      } else if (window.getSelection) {
+        const selection: Selection | any = window.getSelection();
+        const range = doc.createRange();
+        range.selectNodeContents(text);
+        selection.removeAllRanges();
+        selection.addRange(range);
+      }
+
+      const path = `${this.$route.path}#${this.handler}`;
+      if (path) this.$router.push(path);
     },
-    setText(val: string) {
-      const { contentListItem = '' }: any = this.$refs;
-      const { value }: any = useTextInClipboard();
-      this.isSetText = value;
 
-      if (!contentListItem) return;
-      const opt = {
-        name: '{ }',
-        nameCompany: '{ $2 }',
-        titleOffer: '{ $1 }',
-        cost: '{ $cost }',
-        time: '{ $time }'
-      };
-      const headerFixer = this.firstWordUppercase(value);
-      const text = val.replace(opt.name, headerFixer);
-
-      contentListItem.innerHTML = text;
-      return text;
+    doAction(type: any) {
+      switch (type) {
+        case 'delete':
+          this.doDelete();
+          break;
+        case 'clear':
+          this.doClear();
+          break;
+        case 'copy':
+        default:
+          this.doCopy();
+          break;
+      }
     },
     async doCopy() {
       try {
-        const { contentListItem = '' }: any = this.$refs;
+        const { contentListItem }: any = this.$refs;
         this.isLoading = true;
         await useToCopy(this.text, contentListItem);
-        await this.$emit('dialog', { type: 'success', text: this.text });
-        this.$emitter.emit('global-notifications-action', { ...this.dialogs.alert.success, text: this.text });
+        this.$emitter.emit('global-notifications-action', {
+          ...this.dialogs.alert.success,
+          text: this.text
+        });
         this.isLoading = false;
       } catch (error) {
-        this.$emit('dialog', { type: 'danger' });
-        this.$emitter.emit('global-notifications-action', { ...this.dialogs.alert.error, text: this.text });
+        this.$emitter.emit('global-notifications-action', {
+          ...this.dialogs.alert.error,
+          text: this.text
+        });
         this.isLoading = false;
       }
     },
@@ -131,11 +189,15 @@ export default defineComponent({
       try {
         // await this.deleteWord({ id: this.textKey[0], section: this.tabActive })
         // await this.$copyText(this.$refs.contentListItem.innerHTML)
-				this.$emitter.emit('global-notifications-action', { ...this.dialogs.alert.warning, text: this.text });
-        this.$emit('dialog', 'success');
+        this.$emitter.emit('global-notifications-action', {
+          ...this.dialogs.alert.warning,
+          text: this.text
+        });
       } catch (error) {
-        this.$emit('dialog', 'error');
-				this.$emitter.emit('global-notifications-action', { ...this.dialogs.alert.error, text: this.text });
+        this.$emitter.emit('global-notifications-action', {
+          ...this.dialogs.alert.error,
+          text: this.text
+        });
       }
     },
 
@@ -143,32 +205,55 @@ export default defineComponent({
       try {
         this.isLoading = true;
         const res = await this.$copyTo(this.text, 'cut');
-        this.$emitter.emit('global-notifications-action', { ...this.dialogs.alert.success, text: this.text });
-        // this.$emit('dialog', 'success');
+        this.$emitter.emit('global-notifications-action', {
+          ...this.dialogs.alert.success,
+          text: this.text
+        });
         this.isLoading = false;
       } catch (error) {
         this.isLoading = false;
-        this.$emit('dialog', 'error');
-        this.$emitter.emit('global-notifications-action', { ...this.dialogs.alert.error, text: this.text });
+        this.$emitter.emit('global-notifications-action', {
+          ...this.dialogs.alert.error,
+          text: this.text
+        });
       }
     }
   }
 });
 </script>
 
-<style lang="scss">
+<style scope lang="scss">
 .word-list-item {
   justify-self: flex-start;
   flex-wrap: nowrap;
+  appearance: none;
+  user-select: text;
+
+  @apply flex w-full justify-between;
+
+  &__left {
+    @apply flex flex-auto;
+  }
+
+  &__right {
+    @apply ml-2 flex flex-auto justify-end;
+  }
 
   &__paragraph {
     text-align: left;
-    width: 100%;
-    display: inline-block;
+    user-select: contain;
+    display: inline;
+    cursor: text;
+
+    &::selection {
+      @apply bg-green-200 px-2 text-gray-800 hover:bg-green-600;
+    }
   }
 }
 
 .word-list-item__button {
+  @apply ml-2;
+
   height: 34px;
   min-height: 34px;
   width: 34px;
@@ -177,18 +262,25 @@ export default defineComponent({
   display: flex;
   align-items: center;
   justify-content: center;
-  border-radius: 4px;
+  border-radius: 8px;
+  border-color: transparent;
+
+  outline: none;
+  &:hover {
+    border-color: transparent;
+    outline: none;
+  }
 
   &.btn-danger {
     @apply bg-red-500 hover:bg-red-600;
   }
 
   &.btn-warning {
-    @apply bg-orange-400 hover:bg-orange-500 text-white;
+    @apply bg-orange-400 text-white hover:bg-orange-500;
   }
 
   &.btn-success {
-    @apply bg-green-500 hover:bg-green-700;
+    @apply border-collapse bg-green-500 text-white hover:bg-green-600;
   }
 }
 </style>

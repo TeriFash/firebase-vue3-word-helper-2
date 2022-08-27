@@ -1,6 +1,12 @@
 <template>
-  <b-navbar class="header-navbar" id="nav" toggleable="md" type="dark" variant="dark">
-    <b-navbar-brand tag="h1" class="mb-0 mr-4" type="light" :to="localizedUrl('/')">
+  <b-navbar
+    class="header-navbar"
+    id="nav"
+    toggleable="md"
+    type="dark"
+    variant="dark"
+  >
+    <b-navbar-brand tag="h2" type="light" :to="localizedUrl('/')">
       {{ $t('menu.words') }}
       <span class="header-navbar__subline" v-if="getTabActiveTitle">
         {{ getTabActiveTitle }}
@@ -21,28 +27,46 @@
       </template> -->
     </b-navbar-toggle>
     <!-- @update:modelValue="collapse = $event" -->
-
     <b-collapse
       @update:modelValue="collapse = $event"
       :class="{ 'header-navbar__collapse': collapse }"
       id="nav-collapse"
       is-nav
     >
-      <b-navbar-nav :class="{ 'header-navbar__collapse-left': collapse }" class="mr-auto">
+      <b-navbar-nav
+        :class="{ 'header-navbar__collapse-left': collapse }"
+        class="mr-auto"
+      >
         <template v-if="signedIn">
           <b-nav-item :to="localizedUrl('/')">{{ $t('menu.home') }}</b-nav-item>
-          <b-nav-item :to="localizedUrl('/about')">{{ $t('menu.about') }}</b-nav-item>
+          <b-nav-item :to="localizedUrl('/about')">{{
+            $t('menu.about')
+          }}</b-nav-item>
         </template>
         <template v-else>
-          <b-nav-item active :to="localizedUrl('/')">{{ $t('menu.home') }}</b-nav-item>
-          <b-nav-item :to="localizedUrl('/about')">{{ $t('menu.about') }}</b-nav-item>
-          <b-nav-item :to="localizedUrl('/account')">{{ $t('menu.signIn') }}</b-nav-item>
-          <b-nav-item :to="localizedUrl('/words')">{{ $t('menu.words') }}</b-nav-item>
+          <b-nav-item active :to="localizedUrl('/')">{{
+            $t('menu.home')
+          }}</b-nav-item>
+          <b-nav-item :to="localizedUrl('/about')">{{
+            $t('menu.about')
+          }}</b-nav-item>
+          <b-nav-item :to="localizedUrl('/account')">{{
+            $t('menu.signIn')
+          }}</b-nav-item>
+          <b-nav-item :to="localizedUrl('/words')">{{
+            $t('menu.words')
+          }}</b-nav-item>
         </template>
       </b-navbar-nav>
 
+      <theme-switcher class="mx-auto mb-0" />
+
       <!-- Right aligned nav items -->
-      <b-navbar-nav justified :class="{ 'header-navbar__collapse-right': collapse }" class="ml-auto">
+      <b-navbar-nav
+        justified
+        :class="{ 'header-navbar__collapse-right': collapse }"
+        class="ml-auto"
+      >
         <languages navbar />
 
         <b-nav-form class="d-flex header-navbar__form">
@@ -50,19 +74,9 @@
             size="md"
             class="header-navbar__form-input"
             :placeholder="$t('menu.searchInput')"
+            v-model="search"
           ></b-form-input>
-          <b-button variant="dark" size="md" class="header-navbar__form-btn" type="submit">{{
-            $t('menu.search')
-          }}</b-button>
         </b-nav-form>
-
-        <!-- <b-nav-item-dropdown right>
-          <template #button-content>
-            <span>User</span>
-          </template>
-          <b-dropdown-item href="#">Profile</b-dropdown-item>
-          <b-dropdown-item href="#">Sign Out</b-dropdown-item>
-        </b-nav-item-dropdown> -->
       </b-navbar-nav>
     </b-collapse>
   </b-navbar>
@@ -70,10 +84,13 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-
-import Languages from '@/components/Languages.vue';
+import { currentTheme, initTheme, switchTheme } from '@use/useTheme';
+import Languages from '@cc/Languages.vue';
 // import { useUser } from '@/utils/utils';
 import { mapGetters } from 'vuex';
+const ThemeSwitcher = defineAsyncComponent(
+  () => import('@/components/ThemeSwitcher.vue')
+);
 
 export default defineComponent({
   name: 'HeaderNavbar',
@@ -85,18 +102,33 @@ export default defineComponent({
   },
   data() {
     return {
-      collapse: false
+      collapse: false,
+      search: ''
     };
   },
   components: {
-    Languages
+    Languages,
+    ThemeSwitcher
   },
   setup() {
     // const user = useUser();
     // const visible = ref(true);
+
+    onMounted(() => {
+      initTheme();
+    });
     return {
       // visible
+      currentTheme,
+      switchTheme
     };
+  },
+  watch: {
+    search(value, oldValue) {
+      if (value !== oldValue) {
+        this.$emitter.emit('global-search-action', value);
+      }
+    }
   },
   computed: {
     ...mapGetters({
@@ -119,6 +151,10 @@ export default defineComponent({
 
 <style lang="scss">
 .header-navbar {
+  @apply p-6;
+  min-height: 108px;
+  min-width: 100%;
+
   &.navbar {
     @apply p-6;
 
@@ -127,21 +163,17 @@ export default defineComponent({
       @apply font-bold text-gray-600 hover:text-green-600;
     }
 
+    .navbar-brand {
+      @apply mb-0 mr-4 text-white hover:text-green-400;
+    }
+
     .router-link-exact-active {
       @apply text-green-600 hover:text-green-600;
     }
   }
 
-  /* & a {
-    @apply font-bold text-gray-700;
-  }
-
-  & a.router-link-exact-active {
-    @apply text-green-600;
-  } */
-
   & .nav-item.dropdown {
-    @apply text-gray-600 outline-none focus:outline-none active:outline-none hover:outline-none;
+    @apply text-gray-600 outline-none hover:outline-none focus:outline-none active:outline-none;
 
     & .btn-group {
       @apply outline-none focus:outline-none;
@@ -150,7 +182,7 @@ export default defineComponent({
     & .btn.btn-link.dropdown-toggle.show {
       box-shadow: none;
       text-align: left;
-      @apply text-gray-700 outline-none focus:outline-none active:outline-none hover:outline-none;
+      @apply text-gray-700 outline-none hover:outline-none focus:outline-none active:outline-none;
     }
     & .btn.btn-link.dropdown-toggle {
       text-decoration: none;

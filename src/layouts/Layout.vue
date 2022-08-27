@@ -1,6 +1,5 @@
 <template>
   <div class="layout" :class="`bg-${currentTheme}`">
-    <theme-switcher />
     <router-view />
     <notifications />
   </div>
@@ -9,13 +8,14 @@
 <script lang="ts">
 import { useStore } from 'vuex';
 import { User } from 'firebase/auth';
-import { defineComponent, reactive, ref, Ref, onMounted, onBeforeUnmount, defineAsyncComponent } from 'vue';
-import { currentTheme, initTheme, switchTheme } from '@/composables/useTheme';
-// import { auth } from '@/utils/firebase';
-import { initClipboardData, useSetSectionsData } from '@/utils/utils'; // useI18nParam // initClipboardData
+import { Ref } from 'vue';
+import { currentTheme } from '@use/useTheme';
+import { auth } from '@/utils/firebase';
+import { initClipboardData, useSetSectionsData } from '@utils/utils'; // useI18nParam // initClipboardData
 
-const ThemeSwitcher = defineAsyncComponent(() => import('@/components/ThemeSwitcher.vue'));
-const Notifications = defineAsyncComponent(() => import('@/components/Notifications.vue'));
+const Notifications = defineAsyncComponent(
+  () => import('@/components/Notifications.vue')
+);
 
 interface UserData {
   user: User | null;
@@ -24,12 +24,12 @@ interface UserData {
 export default defineComponent({
   name: 'AppLayout',
   components: {
-    ThemeSwitcher,
     Notifications
   },
   async setup() {
     const store = useStore();
     const user = reactive<UserData>({ user: null });
+    console.log('✅ 🧊 ~ user22', user);
     const polling: Ref = ref<Ref>();
 
     const onClipParse = async () => {
@@ -53,26 +53,25 @@ export default defineComponent({
       initClipboardData();
       useSetSectionsData();
       onClipParse();
-      initTheme();
 
       window.addEventListener('focus', setFocused);
       window.addEventListener('blur', setBlurred);
 
-      // auth.onAuthStateChanged((fbuser) => {
-      //   if (fbuser) {
-      //     console.log('authStateChanged:');
-      //     user.user = fbuser;
-      //     store.commit('setUser', fbuser);
-      //   } else {
-      //     store.commit('setUser', null);
-      //   }
-      // });
+      auth.onAuthStateChanged((fbuser) => {
+        console.log('✅ 🧊 ~ fbuser', fbuser);
+        if (fbuser) {
+          console.log('authStateChanged:');
+          user.user = fbuser;
+          store.commit('setUser', fbuser);
+        } else {
+          store.commit('setUser', null);
+        }
+      });
     });
 
     return {
       user,
-      currentTheme,
-      switchTheme
+      currentTheme
     };
   }
 });
@@ -86,7 +85,7 @@ export default defineComponent({
     .list-group-item-action:hover,
     .list-group-item-action:focus,
     .word-list-item__paragraph {
-      @apply dark:text-white dark:bg-rb-dark;
+      @apply dark:bg-rb-dark dark:text-white;
     }
   }
 
@@ -101,6 +100,6 @@ export default defineComponent({
 }
 
 body {
-  @apply dark:text-white dark:bg-rb-dark bg-rb-light;
+  @apply bg-rb-light dark:bg-rb-dark dark:text-white;
 }
 </style>

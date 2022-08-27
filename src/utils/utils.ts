@@ -28,6 +28,22 @@ export const useTextInClipboard = () => {
   const textInClipboard = computed(() => store.getters.getClipboardData);
   return textInClipboard;
 };
+export const useTabActive = () => {
+  const store = useStore();
+  const tabActiveStore = computed(() => store.state.tabActive);
+  const tabActiveLocal: any = localStorage.getItem('tabActive');
+  const tabActive = computed(() => store.getters.getTabActive);
+  if (tabActiveLocal) {
+    store.dispatch(
+      'setTabActive',
+      Object.assign(tabActiveStore.value, JSON.parse(tabActiveLocal))
+    );
+  } else {
+    store.dispatch('setTabActive', tabActiveStore.value);
+  }
+
+  return tabActive;
+};
 export const initClipboardData = async () => {
   try {
     const store = useStore();
@@ -53,7 +69,10 @@ export const useSetSectionsData = async () => {
     const dataLocal: any = localStorage.getItem('sections');
 
     if (JSON.parse(dataLocal)) {
-      const result = await store.dispatch('setSectionData', JSON.parse(dataLocal));
+      const result = await store.dispatch(
+        'setSectionData',
+        JSON.parse(dataLocal)
+      );
       return result;
     } else {
       const data: any[] | undefined = await firebaseBdDataSetStore();

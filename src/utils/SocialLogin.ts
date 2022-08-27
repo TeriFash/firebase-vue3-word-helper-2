@@ -14,6 +14,7 @@ const authSignIn = async (
 ) => {
   try {
     await signInWithPopup(auth, provider);
+
     if (callback) {
       callback();
     }

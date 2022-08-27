@@ -1,11 +1,25 @@
 <template>
-  <div class="theme-switcher mb-4" :class="currentTheme">
+  <div class="theme-switcher" :class="currentTheme">
     <label class="theme-switcher__wrapper">
-      <input @change="handlerUpdate" :value="currentTheme" type="checkbox" name="theme-switcher" />
+      <input
+        @change="handlerUpdate"
+        :value="currentTheme"
+        type="checkbox"
+        name="theme-switcher"
+      />
       <div class="theme-switcher__container">
-        <b-icon-brightness-high-fill class="theme-switcher__icon sun" v-bind="iconsAttrs" />
-        <b-icon-arrow-right-short class="theme-switcher__icon arrow" v-bind="iconsAttrs" />
-        <b-icon-moon-stars-fill class="theme-switcher__icon moon" v-bind="iconsAttrs" />
+        <b-icon-brightness-high-fill
+          class="theme-switcher__icon sun"
+          v-bind="iconsAttrs"
+        />
+        <b-icon-arrow-right-short
+          class="theme-switcher__icon arrow"
+          v-bind="iconsAttrs"
+        />
+        <b-icon-moon-stars-fill
+          class="theme-switcher__icon moon"
+          v-bind="iconsAttrs"
+        />
       </div>
     </label>
   </div>
@@ -13,7 +27,7 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import { currentTheme, initTheme, switchTheme } from '@/composables/useTheme';
+import { currentTheme, initTheme, switchTheme } from '@use/useTheme';
 import { mapGetters } from 'vuex';
 
 export default defineComponent({
@@ -55,7 +69,6 @@ export default defineComponent({
   },
   methods: {
     handlerUpdate(val: any) {
-      console.log('✅ 🧊 ~ val', val);
       switchTheme();
       this.checkbox = currentTheme === 'light';
     }
@@ -114,7 +127,8 @@ export default defineComponent({
     box-shadow: 0px 0px 20px -2px var(--shadow-color);
     background: var(--switcher-bg);
 
-    transition: background-color 400ms cubic-bezier(0.995, -0.265, 0.855, 0.505), box-shadow 100ms linear;
+    transition: background-color 400ms cubic-bezier(0.995, -0.265, 0.855, 0.505),
+      box-shadow 100ms linear;
 
     &:hover {
       box-shadow: 0px 0px 30px -2px var(--shadow-color);

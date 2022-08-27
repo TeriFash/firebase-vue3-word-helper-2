@@ -3,7 +3,10 @@ import { User } from 'firebase/auth';
 interface State {
   user: User | null | undefined;
   textInClipboard: string | '';
-  tabActive: string | any;
+  tabActive: {
+    index: number;
+    name: string;
+  };
   sections: object;
   sectionsTitles: object;
   data: object | null | undefined;
@@ -13,7 +16,10 @@ export default createStore<State>({
   state: {
     user: undefined,
     textInClipboard: '',
-    tabActive: '',
+    tabActive: {
+      index: 0,
+      name: 'simple',
+    },
     sections: {},
     sectionsTitles: {},
     data: [],
@@ -24,6 +30,8 @@ export default createStore<State>({
     },
     setTabActive(state: State, active) {
       state.tabActive = active;
+      Object.assign(state.tabActive, active);
+      localStorage.setItem('tabActive', JSON.stringify(state.tabActive));
     },
     loadSections(state: State, data) {
       const { simple, accompanying, rare } = data;
@@ -31,9 +39,6 @@ export default createStore<State>({
 
       state.sections = sections;
       localStorage.setItem('sections', JSON.stringify(sections));
-
-      // if (localStorage.getItem("sections")) {
-      // }
     },
     loadSectionsTitles(state: State, titles) {
       state.sectionsTitles = titles;
@@ -51,9 +56,14 @@ export default createStore<State>({
     isSignedIn: (state: State) => {
       return state.user !== null && state.user !== undefined;
     },
-    getSectionCurrentData: (state: State) => Object.keys(state.sections)[state.tabActive],
+    getSectionCurrentData: (state: State) =>
+      Object.keys(state.sections)[state.tabActive.index],
     getSectionsList: (state: State) => state.sections,
-    getTabActive: (state: State) => state.tabActive,
+    getTabActive: (state: State) => {
+      const items = localStorage.getItem('tabActive');
+      if (items && JSON.parse(items)) return JSON.parse(items);
+      return state.tabActive;
+    },
     getSectionsTitles: (state: State) => {
       const titles: any = {};
       Object.keys(state.sections).forEach((title: any) => {
@@ -62,7 +72,8 @@ export default createStore<State>({
 
       return titles;
     },
-    getClipboardData: (state: State) => state.textInClipboard || localStorage.getItem('textInClipboard'),
+    getClipboardData: (state: State) =>
+      state.textInClipboard || localStorage.getItem('textInClipboard'),
   },
   actions: {
     fetchSections: async ({ commit }) => {

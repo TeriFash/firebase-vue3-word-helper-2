@@ -2,8 +2,10 @@
   <header-navbar :signed-in="isSignedIn" />
   <Suspense>
     <router-view v-slot="{ Component }">
-      <transition name="fade">
-        <component :is="Component" />
+      <transition mode="out-in" name="fade">
+        <keep-alive>
+          <component :is="Component"></component>
+        </keep-alive>
       </transition>
     </router-view>
   </Suspense>
@@ -12,8 +14,15 @@
 <script lang="ts">
 import { defineComponent, computed, onMounted } from 'vue';
 import { RouterLink, RouterView } from 'vue-router';
-import { useUser, useIsSignedIn, initClipboardData } from '@/utils/utils';
-// import { useLocalizedUrl } from '@/i18n/utils';
+import { useUser, useIsSignedIn } from '@utils/utils';
+import {
+  firebaseSnapshotStore,
+  useAuth,
+  useFirestore,
+  auth,
+  firestore
+} from '@utils/firebase';
+import { useLocalizedUrl } from '@/i18n/utils';
 
 export default defineComponent({
   setup() {
@@ -21,9 +30,11 @@ export default defineComponent({
     const isSignedIn = useIsSignedIn();
 
     onMounted(async () => {
-      //  useLocalizedUrl();
+      useLocalizedUrl();
 
-      await initClipboardData();
+      console.log('✅ 🧊 ~ useFirestore', await useFirestore());
+      console.log('✅ 🧊 ~ firestore', await firestore());
+      console.log('✅ 🧊 ~ db', await useAuth());
     });
 
     return {
