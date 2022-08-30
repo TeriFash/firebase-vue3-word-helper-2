@@ -22,7 +22,7 @@ export default defineComponent({
   name: 'WordList',
   props: {
     title: {
-      type: [String],
+      type: [String, Number],
       default: ''
     },
     data: {
@@ -66,6 +66,7 @@ export default defineComponent({
     },
     setText(val: string) {
       const { value }: any = useTextInClipboard();
+      let text;
       const opt = {
         name: '{ }',
         nameCompany: '{ $2 }',
@@ -80,7 +81,7 @@ export default defineComponent({
         replaceIt: opt.name,
         replaceBy: headerFixer
       };
-      const text = this.replaceWord(replace);
+      text = this.replaceWord(replace);
       const textMarked =
         value &&
         this.replaceWord({
@@ -89,7 +90,10 @@ export default defineComponent({
         });
 
       if (this.title === 'rare') {
-        return text.split(' ').slice(1).join(' ');
+        return {
+          text: text.split(' ').slice(1).join(' '),
+          textMarked: textMarked.split(' ').slice(1).join(' ')
+        };
       }
       return { text, textMarked };
     }

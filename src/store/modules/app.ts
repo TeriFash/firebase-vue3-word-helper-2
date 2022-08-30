@@ -1,4 +1,5 @@
 import { Module } from 'vuex';
+import { parsedLocalStorage } from '@/utils';
 // import { IBaseStore } from '@/types/Base';
 export interface IAppState {
   data: object | null | undefined;
@@ -12,6 +13,7 @@ export interface IAppState {
 // export interface IAppState extends IBaseStore {
 //   state: IAppState;
 // }
+const tabActive = parsedLocalStorage('tabActive');
 
 const store: Module<IAppState, unknown> = {
   // namespaced: true,
@@ -26,10 +28,9 @@ const store: Module<IAppState, unknown> = {
     };
   },
   mutations: {
-    setTabActive(state: IAppState, active: any) {
-      state.tabActive = active;
-      Object.assign(state.tabActive, active);
-      localStorage.setItem('tabActive', JSON.stringify(state.tabActive));
+    setTabActive(state: IAppState, tabActive) {
+      state.tabActive = tabActive;
+      localStorage.setItem('tabActive', JSON.stringify(tabActive));
     },
     loadClipboardData(state: IAppState, data: any) {
       state.textInClipboard = data;
@@ -37,8 +38,13 @@ const store: Module<IAppState, unknown> = {
     },
   },
   actions: {
-    setTabActive({ commit }, payload) {
-      commit('setTabActive', payload);
+    setTabActive({ getters, commit }, payload) {
+      const { getSectionsKeys } = getters;
+
+      commit('setTabActive', {
+        index: payload.index,
+        name: payload.name || getSectionsKeys[payload.index],
+      });
     },
     fetchClipboardData: async ({ commit, getters }) => {
       try {
@@ -89,11 +95,7 @@ const store: Module<IAppState, unknown> = {
     },
   },
   getters: {
-    getTabActive: (state: IAppState) => {
-      const items = localStorage.getItem('tabActive');
-      if (items && JSON.parse(items)) return JSON.parse(items);
-      return state.tabActive;
-    },
+    getTabActive: (state: IAppState) => tabActive || state.tabActive,
     getClipboardData: (state: IAppState) =>
       state.textInClipboard || localStorage.getItem('textInClipboard'),
   },

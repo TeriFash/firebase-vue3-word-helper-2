@@ -3,7 +3,8 @@ module.exports = {
     './public/**/*.html',
     './src/**/*.{js,jsx,ts,tsx,vue}',
   ],
-	darkMode: 'class',
+	purge: ["./src/**/*.{js,ts,jsx,tsx, vue}"],
+	darkMode: ['class', '[data-mode="dark"]'],
   theme: {
     extend: {
 			colors: {
@@ -20,11 +21,11 @@ module.exports = {
 				slg: '978px',
 				lg: '1024px',
 				xl: '1280px',
-      	'2xl': '1440px',
+				'2xl': '1440px',
         '3xl': '1600px',
       },
       fontFamily: {
-        nunito: ['Nunito', 'sans-serif'],
+        sans: ['Nunito', 'sans-serif'],
 				poppins: ['Poppins', 'sans-serif'],
 			},
 		},

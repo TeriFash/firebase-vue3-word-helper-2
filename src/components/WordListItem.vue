@@ -50,7 +50,7 @@ export default defineComponent({
   name: 'WordListItem',
   props: {
     handler: {
-      type: String,
+      type: [String, Number],
       default: ''
     },
     text: {

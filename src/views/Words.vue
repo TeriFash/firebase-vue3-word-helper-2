@@ -13,9 +13,9 @@
       class="words__tab"
       title-item-class="words__tab-title"
       href="#"
-      v-for="(item, i, num) in getSectionsList"
+      v-for="(item, i) in getSectionsKeys"
       :key="i"
-      :active="num === tabIndex"
+      :active="i === tabIndex"
       :title-link-class="[
         'words__nav-link',
         `words__nav-link--${currentTheme}`
@@ -23,13 +23,13 @@
       :lazy="true"
     >
       <template #title>
-        <h5 class="mb-1">{{ headerTitle(i) }}</h5>
-        <b-badge :variant="num === tabIndex ? 'success' : 'disabled'" pill>{{
-          item.length
+        <h5 class="mb-1">{{ getSectionsTitles[item] }}</h5>
+        <b-badge :variant="i === tabIndex ? 'success' : 'disabled'" pill>{{
+          getSectionsList[item].length
         }}</b-badge>
       </template>
       <template #default>
-        <word-list :title="i" :data="getSearchedData" />
+        <word-list :title="item" :data="getSearchedData" />
       </template>
     </b-tab>
   </b-tabs>
@@ -37,9 +37,10 @@
 
 <script lang="ts">
 import { mapGetters, mapActions } from 'vuex';
-import { useTabActive } from '@utils/utils';
+import { useGetTabActive, useTabActive } from '@utils/utils';
 import { currentTheme } from '@use/useTheme';
 import WordList from '@cc/WordList.vue';
+// import { isNumber } from 'lodash';
 
 export default defineComponent({
   name: 'Words',
@@ -47,6 +48,10 @@ export default defineComponent({
     WordList
   },
   setup() {
+    onMounted(() => {
+      useTabActive();
+    });
+
     return { currentTheme };
   },
   data() {
@@ -59,8 +64,10 @@ export default defineComponent({
     ...mapGetters({
       getSectionsList: 'getSectionsList',
       getSectionsTitles: 'getSectionsTitles',
+      getSectionsKeys: 'getSectionsKeys',
       getClipboardData: 'getClipboardData',
-      getTabActive: 'getTabActive'
+      getTabActive: 'getTabActive',
+      getSectionCurrentData: 'getSectionCurrentData'
     }),
     listIndex() {
       const listKeys: any = Object.keys(this.getSectionsTitles);
@@ -89,12 +96,9 @@ export default defineComponent({
     }
   },
   created() {
-    if (!this.getTabActive.index) {
-      this.tabIndex = useTabActive().value.index;
-      this.setIndexTabActive(this.tabIndex);
-    } else {
-      this.tabIndex = this.getTabActive.index;
-    }
+    const { value }: any = useGetTabActive();
+    if (!value?.name) this.setTabActive(value);
+    this.tabIndex = value.index;
   },
   mounted() {
     this.$emitter.on('global-search-action', (event: any) => {
@@ -111,10 +115,9 @@ export default defineComponent({
     headerTitle(idx: any) {
       return this.getSectionsTitles[idx];
     },
-    setIndexTabActive(idx: any) {
-      const listKeys: any = Object.keys(this.getSectionsList);
-      const name = idx === 0 ? 'simple' : listKeys[idx];
-      this.setTabActive({ index: idx, name });
+    setIndexTabActive(index: any, nameValue: any = '') {
+      const name = nameValue || this.getSectionsKeys[index];
+      this.setTabActive({ index, name });
     }
   }
 });
