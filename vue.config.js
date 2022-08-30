@@ -37,7 +37,13 @@ module.exports = defineConfig({
   css: {
     sourceMap: process.env.NODE_ENV !== 'production'
   },
-	// chainWebpack: config => {
+	chainWebpack: config => {
+		config
+			.plugin('html')
+			.tap(args => {
+					args[0].title = "Word Helper";
+					return args;
+			})
   //   config.resolve.alias.set(
   //     'vue$',
   //     // If using the runtime only build
@@ -45,5 +51,5 @@ module.exports = defineConfig({
   //     // Or if using full build of Vue (runtime + compiler)
   //     // path.resolve(__dirname, 'node_modules/vue/dist/vue.esm.js')
   //   )
-  // },
+  },
 });

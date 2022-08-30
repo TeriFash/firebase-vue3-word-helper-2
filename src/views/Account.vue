@@ -19,11 +19,10 @@ export default defineComponent({
     return {
       googleSignin: googleSignin(
         () => {
-          //
+          console.log('✅ 🧊', this);
         },
         (err) => {
           console.log('✅ 🧊 ~ err', err);
-          alert(err.message);
         }
       )
     };

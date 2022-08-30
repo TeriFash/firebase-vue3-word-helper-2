@@ -29,7 +29,6 @@ export default defineComponent({
   async setup() {
     const store = useStore();
     const user = reactive<UserData>({ user: null });
-    console.log('✅ 🧊 ~ user22', user);
     const polling: Ref = ref<Ref>();
 
     const onClipParse = async () => {
@@ -58,7 +57,6 @@ export default defineComponent({
       window.addEventListener('blur', setBlurred);
 
       auth.onAuthStateChanged((fbuser) => {
-        console.log('✅ 🧊 ~ fbuser', fbuser);
         if (fbuser) {
           console.log('authStateChanged:');
           user.user = fbuser;

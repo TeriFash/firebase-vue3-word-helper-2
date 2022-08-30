@@ -1,5 +1,5 @@
 import { initializeApp, FirebaseApp } from 'firebase/app';
-import { getAuth, connectAuthEmulator } from 'firebase/auth';
+import { getAuth } from 'firebase/auth'; // connectAuthEmulator
 import { getFunctions } from 'firebase/functions';
 import {
   getFirestore,
@@ -8,9 +8,8 @@ import {
   getDocs,
   serverTimestamp,
   initializeFirestore,
-  connectFirestoreEmulator,
+  // connectFirestoreEmulator,
 } from 'firebase/firestore'; //Timestamp
-import { enableLogging } from 'firebase/database';
 import { firebaseConfig } from '../config/project';
 
 const firebaseApp: FirebaseApp = initializeApp(firebaseConfig);
@@ -22,34 +21,30 @@ initializeFirestore(firebaseApp, firestoreSettings);
 export const db = getFirestore(firebaseApp);
 export const auth = getAuth(firebaseApp);
 export const projectTimeStamp = serverTimestamp;
-// eslint-disable-next-line @typescript-eslint/ban-types
-export async function firestore(): Promise<[] | undefined> {
-  const { settings }: any = await getFirestore(firebaseApp);
-  if (process.env.NODE_ENV === 'development') {
-    connectAuthEmulator(auth, 'http://localhost:8080/');
-  }
-  return settings;
-}
-export async function firebaseSnapshotStore(): Promise<[] | undefined> {
+
+export async function firebaseSnapshotStore(
+  colName: any = 'sections'
+): Promise<[] | undefined> {
   const notes: any = ref([]);
 
-  const querySnapshot = await getDocs(collection(db, 'simple'));
+  const querySnapshot = await getDocs(collection(db, colName));
   querySnapshot.forEach((doc) => {
     notes.value.push({ id: doc.id, ...doc.data() });
   });
-  const res = await onSnapshot(collection(db, `simple`), (snapshot) => {
+  await onSnapshot(collection(db, colName), (snapshot) => {
     notes.value = snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
+    console.log('✅ 🧊 ~ res', snapshot);
   });
-  console.log('✅ 🧊 ~ res', res);
+  console.log('✅ 🧊 ~ notes', notes);
 
   return notes;
 }
-export async function firebaseBdDataSetStore(): Promise<[] | undefined> {
+export async function firebaseBdDataSetStore(
+  colName: any = 'sections'
+): Promise<[] | undefined> {
   try {
     const sectionsCol = collection(db, 'sections');
     const sectionsSnapshot = await getDocs(sectionsCol);
-
-    // const noteDate = Timestamp.fromDate(new Date());
     const sectionsList: any = sectionsSnapshot.docs.map((doc) => doc.data());
     const filtered = sectionsList.filter(
       (item: any) => item?.accompanying || item?.simple || item?.rare
@@ -61,28 +56,16 @@ export async function firebaseBdDataSetStore(): Promise<[] | undefined> {
   }
 }
 
-if (location.hostname === 'localhost') {
-  enableLogging(true);
-  connectFirestoreEmulator(db, 'localhost', 8080);
-}
-
-export const useAuth = async () => {
+export const useAuth = () => {
+  const user = ref(auth.currentUser);
   if (process.env.NODE_ENV === 'development') {
-    // db.settings({ host: 'localhost:8080', ssl: false });
-    // firebase.auth().useEmulator('http://localhost:9099/');
-    connectAuthEmulator(auth, 'http://localhost:8080/');
+    // connectAuthEmulator(auth, 'http://localhost:8080/');
+    // enableLogging(true);
+    // connectFirestoreEmulator(db, 'localhost', 8080);
   }
-  const { currentUser } = auth;
-  console.log('✅ 🧊 ~ user', currentUser);
 
   return {
-    user: currentUser,
-  };
-};
-
-export const useFirestore = () => {
-  return {
-    db,
+    user,
   };
 };
 
