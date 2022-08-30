@@ -1,10 +1,12 @@
 import { computed } from 'vue';
 import { useStore } from 'vuex';
 import { firebaseBdDataSetStore } from '@/utils/firebase';
+import { parsedLocalStorage } from '@/utils';
+import { TabActive } from '@/types';
 
 export const useUser = () => {
   const store = useStore();
-  const user = computed(() => store.state.user);
+  const user = computed(() => store.state.user.user);
   return user;
 };
 export const useIsSignedIn = () => {
@@ -14,7 +16,7 @@ export const useIsSignedIn = () => {
 };
 export const useData = () => {
   const store = useStore();
-  const data = computed(() => store.state.data);
+  const data = computed(() => store.state.app.data);
   return data;
 };
 export const useSections = () => {
@@ -30,14 +32,11 @@ export const useTextInClipboard = () => {
 };
 export const useTabActive = () => {
   const store = useStore();
-  const tabActiveStore = computed(() => store.state.tabActive);
-  const tabActiveLocal: any = localStorage.getItem('tabActive');
+  const tabActiveStore = computed(() => store.state.app.tabActive);
+  const tabActiveLocal: TabActive = parsedLocalStorage('tabActive');
   const tabActive = computed(() => store.getters.getTabActive);
   if (tabActiveLocal) {
-    store.dispatch(
-      'setTabActive',
-      Object.assign(tabActiveStore.value, JSON.parse(tabActiveLocal))
-    );
+    store.dispatch('setTabActive', tabActiveLocal);
   } else {
     store.dispatch('setTabActive', tabActiveStore.value);
   }
@@ -54,29 +53,27 @@ export const initClipboardData = async () => {
     // console.error(error);
   }
 };
-export const updateClipboardData = async (value: any) => {
+export const updateClipboardData = async () => {
   try {
     const store = useStore();
-    const result = await store.dispatch('setClipboardData', value);
+    const result = await store.dispatch('fetchClipboardData');
     return result;
   } catch (error) {
-    // console.error(error);
+    console.error(error);
   }
 };
 export const useSetSectionsData = async () => {
   try {
     const store = useStore();
-    const dataLocal: any = localStorage.getItem('sections');
+    const dataLocal: any = {}; // parsedLocalStorage('sections');
 
-    if (JSON.parse(dataLocal)) {
-      const result = await store.dispatch(
-        'setSectionData',
-        JSON.parse(dataLocal)
-      );
+    if (dataLocal) {
+      const result = await store.dispatch('setSectionData', dataLocal);
       return result;
     } else {
       const data: any[] | undefined = await firebaseBdDataSetStore();
       const result = await store.dispatch('setSectionData', data);
+      console.log('✅ 🧊 ~ result', result);
       return result;
     }
   } catch (error) {

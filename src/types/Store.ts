@@ -24,3 +24,4 @@ class StoreBase<T> {
 export function createStore<T>(store: StorePropsItem<T extends object ? T : never>) {
     return new StoreBase(store);
 }
+

@@ -86,7 +86,7 @@
 import { defineComponent } from 'vue';
 import { currentTheme, initTheme, switchTheme } from '@use/useTheme';
 import Languages from '@cc/Languages.vue';
-// import { useUser } from '@/utils/utils';
+import { toUpperFirst } from '@/utils';
 import { mapGetters } from 'vuex';
 const ThemeSwitcher = defineAsyncComponent(
   () => import('@/components/ThemeSwitcher.vue')
@@ -136,7 +136,7 @@ export default defineComponent({
       getSectionsTitles: 'getSectionsTitles'
     }),
     getTabActiveTitle() {
-      if (this.getTabActive) return this.getSectionsTitles[this.getTabActive];
+      if (this.getTabActive.name) return toUpperFirst(this.getTabActive.name);
       const titles = Object.values(this.getSectionsTitles);
       return titles[0];
     }

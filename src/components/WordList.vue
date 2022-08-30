@@ -1,12 +1,12 @@
 <template>
-  <!-- <h1 class="font-bold text-3xl text-gray-700 mt-8">{{ headerTitle }} !</h1> -->
   <b-list-group class="word-list">
     <word-list-item
       class="word-list__item"
       v-for="(item, i) in data"
       :handler="i"
       :key="i"
-      :text="setText(item)"
+      :text="setText(item).text"
+      :textObj="setText(item)"
     />
   </b-list-group>
 </template>
@@ -15,6 +15,7 @@
 import { defineComponent } from 'vue';
 import { mapGetters } from 'vuex';
 import { useTextInClipboard } from '@/utils/utils';
+import { toUpperFirst } from '@/utils';
 import WordListItem from '@cc/WordListItem.vue';
 
 export default defineComponent({
@@ -54,12 +55,17 @@ export default defineComponent({
   },
   methods: {
     firstWordUppercase(val: string) {
-      if (!val) return '<span class="mark text-gray-400">{ name }</span>';
-      return `${val[0].toUpperCase()}${val.slice(1)}`;
+      if (!val) return '<span class="mark text-orange-600">{ name }</span>';
+      return toUpperFirst(val);
+    },
+    replaceWord({ value, replaceIt, replaceBy, mark = false }: any) {
+      const replaceByLocal = mark
+        ? `<span class="mark text-green-600">${replaceBy}</span>`
+        : replaceBy;
+      return value.replace(replaceIt, replaceByLocal);
     },
     setText(val: string) {
       const { value }: any = useTextInClipboard();
-      let text;
       const opt = {
         name: '{ }',
         nameCompany: '{ $2 }',
@@ -68,12 +74,24 @@ export default defineComponent({
         time: '{ $time }'
       };
       const headerFixer = this.firstWordUppercase(value);
-      text = val.replace(opt.name, headerFixer);
+
+      const replace = {
+        value: val,
+        replaceIt: opt.name,
+        replaceBy: headerFixer
+      };
+      const text = this.replaceWord(replace);
+      const textMarked =
+        value &&
+        this.replaceWord({
+          ...replace,
+          mark: true
+        });
+
       if (this.title === 'rare') {
         return text.split(' ').slice(1).join(' ');
       }
-
-      return text;
+      return { text, textMarked };
     }
   }
 });

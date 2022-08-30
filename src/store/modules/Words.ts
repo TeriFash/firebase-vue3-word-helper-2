@@ -1,11 +1,12 @@
 import { Module } from 'vuex';
+import { toUpperFirst } from '@/utils';
 
-export interface StoreWords {
+export interface IWordsState {
   sections: object;
   sectionsTitles: object;
 }
 
-const store: Module<StoreWords, unknown> = {
+const store: Module<IWordsState, unknown> = {
   // namespaced: true,
   state() {
     return {
@@ -14,25 +15,24 @@ const store: Module<StoreWords, unknown> = {
     };
   },
   mutations: {
-    loadSections(state: StoreWords, data: AnyObject) {
-      const { simple, accompanying, rare } = data;
-      const sections = { simple, accompanying, rare };
-
-      state.sections = sections;
-      localStorage.setItem('sections', JSON.stringify(sections));
+    loadSections(state: IWordsState, data: AnyObject) {
+      state.sections = data;
+      localStorage.setItem('sections', JSON.stringify(data));
     },
-    loadSectionsTitles(state: StoreWords, titles: AnyObject) {
+    loadSectionsTitles(state: IWordsState, titles: AnyObject) {
       state.sectionsTitles = titles;
     },
   },
   actions: {
-    setSectionData: async ({ commit }, payload) => {
+    setSectionData: async (
+      { commit },
+      { simple, rare, accompanying }: AnyObject
+    ) => {
       try {
-        const { simple, rare, accompanying }: any = payload;
-        const titles: any = {};
-        const data: any = { simple, rare, accompanying };
+        const titles: { [key: string]: string } = {};
+        const data: object = { simple, rare, accompanying };
         Object.keys(data).forEach((title: any) => {
-          titles[title] = `${title[0].toUpperCase()}${title.slice(1)}`;
+          titles[title] = toUpperFirst(title);
         });
         commit('loadSections', data);
         commit('loadSectionsTitles', titles);
@@ -42,11 +42,21 @@ const store: Module<StoreWords, unknown> = {
     },
   },
   getters: {
-    getSectionsList: (state: StoreWords) => state.sections,
-    getSectionsTitles: (state: StoreWords) => {
-      const titles: any = {};
-      Object.keys(state.sections).forEach((title: any) => {
-        titles[title] = `${title[0].toUpperCase()}${title.slice(1)}`;
+    getSectionCurrentData: (state: IWordsState, getters: any) => {
+      const {
+        getSectionsValues,
+        getTabActive: { index },
+      } = getters;
+      return getSectionsValues[index];
+    },
+    getSectionsList: (state: IWordsState) => state.sections,
+    getSectionsValues: (state: IWordsState) => Object.values(state.sections),
+    getSectionsKeys: (state: IWordsState) => Object.keys(state.sections),
+    getSectionsTitles: (state: IWordsState, getters: any) => {
+      const titles: { [key: string]: string } = {};
+
+      getters.getSectionsKeys.forEach((title: string) => {
+        titles[title] = toUpperFirst(title);
       });
 
       return titles;

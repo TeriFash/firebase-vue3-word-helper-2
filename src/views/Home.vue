@@ -36,7 +36,6 @@ export default defineComponent({
     onMounted(() => {
       const text = data.value?.textContent;
       value.value = text;
-      console.log('✅ 🧊 ~ data.value %O', data.value);
     });
 
     onBeforeUpdate(() => {

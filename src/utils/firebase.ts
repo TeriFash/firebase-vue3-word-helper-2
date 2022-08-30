@@ -49,7 +49,7 @@ export async function firebaseBdDataSetStore(
     const filtered = sectionsList.filter(
       (item: any) => item?.accompanying || item?.simple || item?.rare
     );
-
+ts!
     return filtered[0];
   } catch (error) {
     console.error('firebaseBdDataSetStore', error);

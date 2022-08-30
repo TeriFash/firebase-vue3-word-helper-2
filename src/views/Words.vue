@@ -113,7 +113,8 @@ export default defineComponent({
     },
     setIndexTabActive(idx: any) {
       const listKeys: any = Object.keys(this.getSectionsList);
-      this.setTabActive({ index: idx, name: listKeys[idx] });
+      const name = idx === 0 ? 'simple' : listKeys[idx];
+      this.setTabActive({ index: idx, name });
     }
   }
 });

@@ -12,9 +12,7 @@
         ref="contentListItem"
         v-clipboard:copy="text"
         :id="`text-${handler}`"
-      >
-        {{ text }}
-      </p>
+      ></p>
     </div>
     <div class="word-list-item__right">
       <b-button
@@ -59,9 +57,9 @@ export default defineComponent({
       type: String,
       default: ''
     },
-    textKey: {
-      type: Array,
-      default: () => []
+    textObj: {
+      type: Object,
+      default: () => ({})
     }
   },
   data() {
@@ -96,7 +94,7 @@ export default defineComponent({
     };
   },
   mounted() {
-    //
+    this.textSet();
   },
   updated() {
     //
@@ -132,6 +130,16 @@ export default defineComponent({
     }
   },
   methods: {
+    textSet() {
+      const { contentListItem }: any = this.$refs;
+      if (this.textObj.textMarked) {
+        contentListItem.innerHTML = this.textObj.textMarked;
+        return;
+      } else {
+        contentListItem.innerHTML = this.textObj.text;
+        return;
+      }
+    },
     toSelect() {
       let doc: Document | any = document;
       let text = doc.getElementById(

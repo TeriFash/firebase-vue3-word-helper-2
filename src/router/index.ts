@@ -75,4 +75,15 @@ const router = createRouter({
   routes,
 });
 
+// router.beforeEach((to, from) => {
+//   console.log('✅ 🧊 ~ to', to);
+//   const tabbar = to.matched.some((record) => record.meta?.tabbar);
+//   console.log('✅ 🧊 ~ tabbar', tabbar);
+//   if (to.meta?.tabbar) {
+//     useTabActive();
+//     return;
+//   }
+//   return;
+// });
+
 export default router;

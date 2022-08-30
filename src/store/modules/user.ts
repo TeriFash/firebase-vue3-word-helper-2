@@ -1,11 +1,11 @@
 import { Module } from 'vuex';
 import { User } from 'firebase/auth';
 
-export interface StoreUser {
+export interface IAppUser {
   user: User | null | undefined;
 }
 
-const store: Module<StoreUser, unknown> = {
+const store: Module<IAppUser, unknown> = {
   // namespaced: true,
   state() {
     return {
@@ -13,17 +13,13 @@ const store: Module<StoreUser, unknown> = {
     };
   },
   mutations: {
-    setUser(state: StoreUser, user: User | null) {
+    setUser(state: IAppUser, user: User | null) {
       state.user = user;
     },
   },
-  actions: {
-    setText(context, payload: AnyObject) {
-      context.commit('setText', payload);
-    },
-  },
+  actions: {},
   getters: {
-    isSignedIn: (state: StoreUser) => {
+    isSignedIn: (state: IAppUser) => {
       return state.user !== null && state.user !== undefined;
     },
   },

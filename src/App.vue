@@ -13,10 +13,12 @@
 
 <script lang="ts">
 import { defineComponent, computed, onMounted } from 'vue';
+// import { RouterLink, RouterView } from 'vue-router';
 import { useUser, useIsSignedIn } from '@utils/utils';
 import { auth, db } from '@utils/firebase';
 import { useLocalizedUrl } from '@/i18n/utils';
 import mixinApp from '@/mixins/mixinApp';
+
 export default defineComponent({
   mixins: [mixinApp],
   setup() {

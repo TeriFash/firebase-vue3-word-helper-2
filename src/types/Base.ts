@@ -12,3 +12,7 @@ export default class Base {
     return b;
   }
 }
+export interface IBaseStore {
+  dispatch: Function,
+  commit: Function
+}

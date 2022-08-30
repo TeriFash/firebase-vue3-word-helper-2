@@ -11,7 +11,10 @@ import { User } from 'firebase/auth';
 import { Ref } from 'vue';
 import { currentTheme } from '@use/useTheme';
 import { auth } from '@/utils/firebase';
-import { initClipboardData, useSetSectionsData } from '@utils/utils'; // useI18nParam // initClipboardData
+import {
+  initClipboardData,
+  useSetSectionsData,
+} from '@utils/utils'; // useI18nParam // initClipboardData
 
 const Notifications = defineAsyncComponent(
   () => import('@/components/Notifications.vue')

@@ -1,9 +1,10 @@
 <template>
   <div class="account">
     <b-button
-      class="account_btn"
+      class="account-btn"
       @click="googleSignin"
       title="'Google account'"
+      variant="info"
     >
       Signin with Google account
     </b-button>
@@ -30,10 +31,10 @@ export default defineComponent({
 });
 </script>
 
-<style scope lang="scss">
+<style lang="scss">
 .account {
-  &__btn.btn {
-    @apply inline-flex h-12 items-center justify-center rounded-lg bg-blue-700  px-6 shadow-lg hover:bg-blue-700 hover:text-white;
+  &.account-btn.btn.btn-info {
+    @apply inline-flex justify-center rounded-lg px-6 shadow-lg;
   }
 }
 </style>
