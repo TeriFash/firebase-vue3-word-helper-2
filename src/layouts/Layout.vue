@@ -1,6 +1,12 @@
 <template>
   <div class="layout" :class="`bg-${currentTheme}`">
-    <router-view />
+    <router-view v-slot="{ Component }">
+      <transition mode="out-in" name="fade">
+        <keep-alive>
+          <component :is="Component"></component>
+        </keep-alive>
+      </transition>
+    </router-view>
     <notifications />
   </div>
 </template>
@@ -11,10 +17,7 @@ import { User } from 'firebase/auth';
 import { Ref } from 'vue';
 import { currentTheme } from '@use/useTheme';
 import { auth } from '@/utils/firebase';
-import {
-  initClipboardData,
-  useSetSectionsData,
-} from '@utils/utils'; // useI18nParam // initClipboardData
+import { initClipboardData, useSetSectionsData } from '@utils/utils'; // useI18nParam // initClipboardData
 
 const Notifications = defineAsyncComponent(
   () => import('@/components/Notifications.vue')
@@ -44,6 +47,7 @@ export default defineComponent({
     };
     const setBlurred = () => {
       clearInterval(polling.value);
+      polling.value = null;
     };
 
     onBeforeUnmount(() => {
@@ -51,7 +55,7 @@ export default defineComponent({
       window.removeEventListener('blur', setBlurred);
     });
 
-    onMounted(() => {
+    onMounted(async () => {
       initClipboardData();
       useSetSectionsData();
       onClipParse();

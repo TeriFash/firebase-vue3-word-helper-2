@@ -1,13 +1,7 @@
 <template>
   <header-navbar :signed-in="isSignedIn" />
   <Suspense>
-    <router-view v-slot="{ Component }">
-      <transition mode="out-in" name="fade">
-        <keep-alive>
-          <component :is="Component"></component>
-        </keep-alive>
-      </transition>
-    </router-view>
+    <router-view />
   </Suspense>
 </template>
 

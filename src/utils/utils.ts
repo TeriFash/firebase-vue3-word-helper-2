@@ -53,7 +53,9 @@ export const initClipboardData = async () => {
     const result = await store.dispatch('setClipboardData', text);
     return result;
   } catch (error) {
-    // console.error(error);
+    const { message }: any = error;
+    console.log('✅ 🧊 🪛 message', message);
+    console.error('initClipboardData', error);
   }
 };
 export const updateClipboardData = async () => {
@@ -62,7 +64,9 @@ export const updateClipboardData = async () => {
     const result = await store.dispatch('fetchClipboardData');
     return result;
   } catch (error) {
-    console.error(error);
+    const { message }: any = error;
+    console.log('✅ 🧊 🪛 message', message);
+    console.error('updateClipboardData', error);
   }
 };
 export const useSetSectionsData = async () => {
@@ -79,6 +83,8 @@ export const useSetSectionsData = async () => {
       return data;
     }
   } catch (error) {
+    const { message }: any = error;
+    console.log('✅ 🧊 🪛 message', message);
     console.error('useSetSectionsData', error);
   }
 };
