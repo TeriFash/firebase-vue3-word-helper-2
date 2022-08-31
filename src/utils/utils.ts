@@ -1,6 +1,9 @@
 import { computed } from 'vue';
 import { useStore } from 'vuex';
-import { firebaseBdDataSetStore } from '@/utils/firebase';
+import {
+  firebaseBdDataSetStore,
+  firebaseSnapshotStore,
+} from '@/utils/firebase';
 import { parsedLocalStorage } from '@/utils';
 import { TabActive, SectionsWords } from '@/types';
 
@@ -54,8 +57,7 @@ export const initClipboardData = async () => {
     return result;
   } catch (error) {
     const { message }: any = error;
-    console.log('✅ 🧊 🪛 message', message);
-    console.error('initClipboardData', error);
+    console.error('initClipboardData', message);
   }
 };
 export const updateClipboardData = async () => {
@@ -65,8 +67,7 @@ export const updateClipboardData = async () => {
     return result;
   } catch (error) {
     const { message }: any = error;
-    console.log('✅ 🧊 🪛 message', message);
-    console.error('updateClipboardData', error);
+    console.error('updateClipboardData', message);
   }
 };
 export const useSetSectionsData = async () => {
@@ -74,17 +75,18 @@ export const useSetSectionsData = async () => {
     const store = useStore();
     const dataLocal: SectionsWords = parsedLocalStorage('sections');
 
-    if (Object.values(dataLocal).length) {
+    if (dataLocal) {
+      // const { value }: any = await firebaseSnapshotStore();
       await store.dispatch('setSectionData', dataLocal);
       return dataLocal;
     } else {
-      const data = await firebaseBdDataSetStore();
-      await store.dispatch('setSectionData', data);
-      return data;
+      const value: any = await firebaseBdDataSetStore();
+      // const data = await firebaseBdDataSetStore();
+      await store.dispatch('setSectionData', value);
+      return value;
     }
   } catch (error) {
     const { message }: any = error;
-    console.log('✅ 🧊 🪛 message', message);
-    console.error('useSetSectionsData', error);
+    console.error('useSetSectionsData', message);
   }
 };

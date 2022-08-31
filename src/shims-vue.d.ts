@@ -5,6 +5,9 @@ declare module '*.vue' {
   export default component
 }
 
+declare module 'click-outside-vue3';
+declare module 'lodash';
+
 interface AnyObject {
 	[key: string]: any
 }

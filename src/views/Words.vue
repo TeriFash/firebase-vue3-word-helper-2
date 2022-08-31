@@ -7,7 +7,7 @@
     active-tab-class="words__tab--active"
     content-class="words__tab--content"
     nav-wrapper-class="words__tab-nav--wrapper"
-    :lazy="false"
+    :lazy="true"
   >
     <b-tab
       class="words__tab"
@@ -20,13 +20,13 @@
         'words__nav-link',
         `words__nav-link--${currentTheme}`
       ]"
-      :lazy="false"
+      :lazy="true"
     >
       <template #title>
         <h5 class="mb-1">{{ headerTitle(i) }}</h5>
-        <b-badge :variant="num === tabIndex ? 'success' : 'disabled'" pill>{{
-          item.length
-        }}</b-badge>
+        <b-badge :variant="num === tabIndex ? 'success' : 'disabled'" pill>
+          {{ item.length }}
+        </b-badge>
       </template>
       <template #default>
         <word-list :title="i" :data="getSearchedData" />
@@ -40,7 +40,6 @@ import { mapGetters, mapActions } from 'vuex';
 import { useGetTabActive, useTabActive } from '@utils/utils';
 import { currentTheme } from '@use/useTheme';
 import WordList from '@cc/WordList.vue';
-// import { isNumber } from 'lodash';
 
 export default defineComponent({
   name: 'Words',

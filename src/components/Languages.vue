@@ -1,12 +1,19 @@
 <template>
-  <b-nav-item-dropdown tag="ul" class="languages" v-if="navbar" :text="selectedValue" right>
+  <b-nav-item-dropdown
+    tag="ul"
+    class="languages"
+    v-if="navbar"
+    :text="selectedValue"
+    right
+  >
     <b-dropdown-item
       class="text-1xl"
       @click="updateNavbarValue($event, option)"
       v-for="(option, index) in languages"
       :key="index"
       :title="option"
-      >{{ $t('languages.' + option) }} <span class="text-1xl font-bold ml-2">{{ option }}</span></b-dropdown-item
+      >{{ $t('languages.' + option) }}
+      <span class="text-1xl ml-2 font-bold">{{ option }}</span></b-dropdown-item
     >
   </b-nav-item-dropdown>
 
@@ -28,6 +35,7 @@ import { useRoute, useRouter } from 'vue-router';
 import { useI18n } from 'vue-i18n';
 import { languages } from '@/i18n/index';
 import { useI18nParam } from '@/i18n/utils';
+import { parsedLocalStorage } from '@/utils';
 
 export default defineComponent({
   emits: ['change'],
@@ -43,7 +51,7 @@ export default defineComponent({
     const router = useRouter();
     const i18n = useI18n();
     const selectedValue = ref(i18n.locale.value);
-    const localLang: any = window.localStorage.getItem('lang');
+    const localLang = parsedLocalStorage('lang', true);
 
     const lang = computed(() => {
       return (i18n.locale.value as string) || localLang;

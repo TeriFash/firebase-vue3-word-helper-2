@@ -13,10 +13,11 @@
 
 <script lang="ts">
 import { useStore } from 'vuex';
-import { User } from 'firebase/auth';
 import { Ref } from 'vue';
+import { User } from 'firebase/auth';
 import { currentTheme } from '@use/useTheme';
-import { auth } from '@/utils/firebase';
+import { auth, firebaseRunTransaction } from '@/utils/firebase';
+import { FIRESTORE_COLLECTION } from '@/types';
 import { useSetSectionsData } from '@utils/utils'; // useI18nParam // initClipboardData
 
 const Notifications = defineAsyncComponent(
@@ -35,7 +36,7 @@ export default defineComponent({
   async setup() {
     const store = useStore();
     const user = reactive<UserData>({ user: null });
-    const polling: any = ref();
+    const polling: any = ref<Ref>();
 
     const onClipParse = async function () {
       polling.value = setInterval(() => {
@@ -51,6 +52,7 @@ export default defineComponent({
     const setFocused = () => {
       onClipParse();
     };
+
     const setBlurred = () => {
       clearInterval(polling.value);
       polling.value = null;
@@ -62,8 +64,8 @@ export default defineComponent({
     });
 
     onMounted(() => {
-      // initClipboardData();
       useSetSectionsData();
+      // firebaseRunTransaction(data.value, FIRESTORE_COLLECTION.accompanying);
       onClipParse();
 
       window.addEventListener('focus', setFocused);

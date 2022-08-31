@@ -58,7 +58,7 @@ export default defineComponent({
       immediate: false,
       handler(value, oldValue) {
         if (value !== oldValue) {
-          this.$forceUpdate();
+          // this.$forceUpdate();
         }
       }
     }

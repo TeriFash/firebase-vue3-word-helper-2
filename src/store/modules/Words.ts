@@ -24,13 +24,10 @@ const store: Module<IWordsState, unknown> = {
     },
   },
   actions: {
-    setSectionData: async (
-      { commit },
-      { simple, rare, accompanying }: AnyObject
-    ) => {
+    setSectionData: async ({ commit }, data: AnyObject) => {
       try {
         const titles: { [key: string]: string } = {};
-        const data: object = { simple, rare, accompanying };
+        // const { simple, rare, accompanying } = data;
         Object.keys(data).forEach((title: any) => {
           titles[title] = toUpperFirst(title);
         });

@@ -3,12 +3,17 @@ export const toUpperFirst = (str: any) => {
   return `${strFix[0].toUpperCase()}${strFix.slice(1)}`;
 };
 
-export const parsedLocalStorage = (key: string): any | undefined => {
-  const data = localStorage.getItem(key);
-  if (data) {
-    return JSON.parse(data);
+export const parsedLocalStorage = (key: string, str = false): any => {
+  let json: string | null | any;
+
+  json = localStorage.getItem(key);
+
+  if (json) {
+    json = str ? json : JSON.parse(json);
+    return json;
   }
-  return undefined;
+
+  return str ? json : null;
 };
 
 export function setSessionStorage(key: string, value: any): void {
