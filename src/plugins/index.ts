@@ -4,11 +4,19 @@ import moment from 'moment';
 import emitter from './emitter'; //  Emitter, TEmitterEventTypes
 import bootstrap from './bootstrap';
 import clipboard from './clipboard';
+import { contextmenu, Closable, focus, pin } from '@/directive';
 import HeaderNavbar from '@/components/HeaderNavbar.vue';
 
 export default {
   install: (app: App) => {
-    app.component('header-navbar', HeaderNavbar);
+    app.directive('contextmenu', contextmenu);
+    app.directive('pin', pin);
+    app.directive('focus', focus);
+    app.directive('closable', Closable());
+    app.directive('closableonmount', Closable(true));
+
+    app.component(HeaderNavbar.name, HeaderNavbar);
+
     app.use(bootstrap);
     app.use(clipboard);
 

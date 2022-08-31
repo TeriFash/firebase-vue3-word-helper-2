@@ -35,6 +35,7 @@ module.exports = defineConfig({
     }
   },
   css: {
+		extract: false,
     sourceMap: process.env.NODE_ENV !== 'production'
   },
 	chainWebpack: config => {
