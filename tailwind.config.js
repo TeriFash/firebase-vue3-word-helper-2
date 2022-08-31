@@ -3,7 +3,7 @@ module.exports = {
     './public/**/*.html',
     './src/**/*.{js,jsx,ts,tsx,vue}',
   ],
-	purge: ["./src/**/*.{js,ts,jsx,tsx, vue}"],
+	// purge: ["./src/**/*.{js,ts,jsx,tsx, vue}"],
 	darkMode: ['class', '[data-mode="dark"]'],
   theme: {
     extend: {
@@ -25,7 +25,7 @@ module.exports = {
         '3xl': '1600px',
       },
       fontFamily: {
-        sans: ['Nunito', 'sans-serif'],
+        nunito: ['Nunito', 'sans-serif'],
 				poppins: ['Poppins', 'sans-serif'],
 			},
 		},

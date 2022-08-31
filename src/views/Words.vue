@@ -7,29 +7,29 @@
     active-tab-class="words__tab--active"
     content-class="words__tab--content"
     nav-wrapper-class="words__tab-nav--wrapper"
-    :lazy="true"
+    :lazy="false"
   >
     <b-tab
       class="words__tab"
       title-item-class="words__tab-title"
       href="#"
-      v-for="(item, i) in getSectionsKeys"
-      :key="i"
-      :active="i === tabIndex"
+      v-for="(item, i, num) in getSectionsList"
+      :key="num"
+      :active="num === tabIndex"
       :title-link-class="[
         'words__nav-link',
         `words__nav-link--${currentTheme}`
       ]"
-      :lazy="true"
+      :lazy="false"
     >
       <template #title>
-        <h5 class="mb-1">{{ getSectionsTitles[item] }}</h5>
-        <b-badge :variant="i === tabIndex ? 'success' : 'disabled'" pill>{{
-          getSectionsList[item].length
+        <h5 class="mb-1">{{ headerTitle(i) }}</h5>
+        <b-badge :variant="num === tabIndex ? 'success' : 'disabled'" pill>{{
+          item.length
         }}</b-badge>
       </template>
       <template #default>
-        <word-list :title="item" :data="getSearchedData" />
+        <word-list :title="i" :data="getSearchedData" />
       </template>
     </b-tab>
   </b-tabs>
@@ -57,7 +57,8 @@ export default defineComponent({
   data() {
     return {
       search: '',
-      tabIndex: 0
+      tabIndex: 0,
+      list: {}
     };
   },
   computed: {
@@ -65,6 +66,7 @@ export default defineComponent({
       getSectionsList: 'getSectionsList',
       getSectionsTitles: 'getSectionsTitles',
       getSectionsKeys: 'getSectionsKeys',
+      getSectionsValues: 'getSectionsValues',
       getClipboardData: 'getClipboardData',
       getTabActive: 'getTabActive',
       getSectionCurrentData: 'getSectionCurrentData'
@@ -78,14 +80,24 @@ export default defineComponent({
       return listValues;
     },
     getSearchedData(): any {
-      const list: any = Object.values(this.getSectionsList);
-      if (this.search === '') return list[this.tabIndex];
-      return list[this.tabIndex].filter((item: any) =>
+      if (this.search === '') return this.getSectionsValues[this.tabIndex];
+      return this.getSectionsValues[this.tabIndex].filter((item: any) =>
         (item || '').toLowerCase().includes(this.search.toLowerCase())
       );
     }
   },
   watch: {
+    getClipboardData: {
+      immediate: true,
+      handler(value, oldValue) {
+        if (value !== oldValue) {
+          this.search = 'update';
+          this.$nextTick(() => {
+            this.search = '';
+          });
+        }
+      }
+    },
     tabIndex: {
       immediate: false,
       handler(value, oldValue) {
@@ -114,6 +126,9 @@ export default defineComponent({
     }),
     headerTitle(idx: any) {
       return this.getSectionsTitles[idx];
+    },
+    setList() {
+      return this.getSearchedData;
     },
     setIndexTabActive(index: any, nameValue: any = '') {
       const name = nameValue || this.getSectionsKeys[index];

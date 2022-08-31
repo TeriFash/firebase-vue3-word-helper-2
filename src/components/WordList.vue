@@ -53,6 +53,16 @@ export default defineComponent({
       return this.getSectionsTitles[this.title];
     }
   },
+  watch: {
+    getClipboardData: {
+      immediate: false,
+      handler(value, oldValue) {
+        if (value !== oldValue) {
+          this.$forceUpdate();
+        }
+      }
+    }
+  },
   methods: {
     firstWordUppercase(val: string) {
       if (!val) return '<span class="mark text-orange-600">{ name }</span>';

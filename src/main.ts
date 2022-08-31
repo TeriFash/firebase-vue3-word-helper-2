@@ -1,12 +1,12 @@
 import { createApp } from 'vue';
 import { createI18n } from 'vue-i18n';
+import './index.css';
 import App from './App.vue';
 import plugins from '@/plugins';
 import router from './router';
 import store from './store';
 import i18nConf from './i18n/index';
 import { i18nUtils } from './i18n/utils';
-import './index.css';
 
 const i18n = createI18n(i18nConf);
 const app = createApp(App);

@@ -46,11 +46,10 @@ const store: Module<IAppState, unknown> = {
         name: payload.name || getSectionsKeys[payload.index],
       });
     },
-    fetchClipboardData: async ({ commit, getters }) => {
+    fetchClipboardData: async ({ commit, getters }, text) => {
       try {
         let result = '';
         const { getClipboardData } = getters;
-        const text = await window.navigator.clipboard.readText();
 
         if (text.toString() !== getClipboardData.toString()) {
           const textCheck: string[] = text.split(' ');

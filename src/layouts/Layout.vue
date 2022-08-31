@@ -17,7 +17,7 @@ import { User } from 'firebase/auth';
 import { Ref } from 'vue';
 import { currentTheme } from '@use/useTheme';
 import { auth } from '@/utils/firebase';
-import { initClipboardData, useSetSectionsData } from '@utils/utils'; // useI18nParam // initClipboardData
+import { useSetSectionsData } from '@utils/utils'; // useI18nParam // initClipboardData
 
 const Notifications = defineAsyncComponent(
   () => import('@/components/Notifications.vue')
@@ -35,13 +35,19 @@ export default defineComponent({
   async setup() {
     const store = useStore();
     const user = reactive<UserData>({ user: null });
-    const polling: Ref = ref<Ref>();
+    const polling: any = ref();
 
-    const onClipParse = async () => {
-      polling.value = await setInterval(() => {
-        store.dispatch('fetchClipboardData');
+    const onClipParse = async function () {
+      polling.value = setInterval(() => {
+        setFocusedStore();
       }, 4000);
     };
+
+    const setFocusedStore = async () => {
+      const text = await window.navigator.clipboard.readText();
+      store.dispatch('fetchClipboardData', text);
+    };
+
     const setFocused = () => {
       onClipParse();
     };
@@ -55,8 +61,8 @@ export default defineComponent({
       window.removeEventListener('blur', setBlurred);
     });
 
-    onMounted(async () => {
-      initClipboardData();
+    onMounted(() => {
+      // initClipboardData();
       useSetSectionsData();
       onClipParse();
 
