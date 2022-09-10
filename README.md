@@ -1,4 +1,4 @@
-# firebase-vue3-startup-kit
+# firebase-vue3-word-helper-2
 
 ## Purpose
 
@@ -48,10 +48,10 @@ The region of Functions is set in europe-central2 (Kiev). If you change the regi
 ## i18n
 
 - This startup-kit supports i18n using url path.
-- You can use one Vue file in both `/en/index` and `/jp/index` .
+- You can use one Vue file in both `/en/index` or `/ru/index` or `/ua/index`.
 - Language files are in `src/i18n/` directory.
-  - `en.ts` and `ja.ts` are Language files.
-  - The language file used for the language switching pull-down (select) is `language.ts`. The same file is read from `en.ts` and `ja.ts`. Write in each language.
+  - `en.ts` or `ru.ts` or `ua.ts` are Language files.
+  - The language file used for the language switching pull-down (select) is `language.ts`. The same file is read from `en.ts` or `ru.ts` `ua.ts`. Write in each language.
   - If you want to add new language, add the language to `index.ts`, add the `{language}.ts`, and add language to `language.ts`.
 - See also `src/router/index.ts` for how to switch languages with url path.
 - You can use the language switching pull-down in `src/components/Languages.vue`. This file needs to read `route.param.lang`, so don't use it in `App.vue` and `Layout.vue`. Other than that, it can be used anywhere.
