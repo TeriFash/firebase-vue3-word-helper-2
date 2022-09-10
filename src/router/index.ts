@@ -54,8 +54,12 @@ const routes: Array<RouteRecordRaw> = [
         children: routeChildren,
         beforeEnter(to, from, next) {
           const tabbar = to.matched.some((record) => record.meta?.tabbar);
-          if (tabbar) {
+          const tabbarUse = to.path !== from.path;
+
+          if (tabbar && tabbarUse) {
             useTabActive();
+            next();
+          } else {
             next();
           }
           next();

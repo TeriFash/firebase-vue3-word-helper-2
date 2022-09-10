@@ -1,3 +1,4 @@
+// eslint-disable-next-line
 function isFunctionCalled(functionName: string): boolean {
   return (
     !process.env.FUNCTION_NAME || process.env.FUNCTION_NAME === functionName

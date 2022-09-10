@@ -1,4 +1,6 @@
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-nocheck
+
 import { IAppState, app } from './app';
 import { IAppUser, user } from './user';
 import { IAppWords, words } from './words';

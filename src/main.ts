@@ -17,6 +17,4 @@ app.use(router);
 app.use(i18n);
 app.use(i18nUtils);
 
-// app.use(VueClipboard);
-
 app.mount('#app');

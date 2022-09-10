@@ -121,5 +121,5 @@ export const useAuth = () => {
 };
 
 // export const dataSetStore = firebaseBdDataSetStore();
-export const functions = getFunctions(firebaseApp, 'asia-northeast1');
+export const functions = getFunctions(firebaseApp, 'europe-central2');
 //export const functions = getFunctions(firebaseApp);

@@ -1,9 +1,10 @@
+// eslint-disable-next-line
 import * as functions from 'firebase-functions';
 
 import { test } from '../../functions/test';
 
 export default functions
-  .region('asia-northeast1')
+  .region('europe-central2')
   .runWith({
     memory: '1GB',
   })

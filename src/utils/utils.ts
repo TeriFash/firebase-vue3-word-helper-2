@@ -33,15 +33,17 @@ export const useTextInClipboard = () => {
   return textInClipboard;
 };
 export const useGetTabActive = () => {
-  const store = useStore();
-  const getTabActive = computed(() => store.getters.getTabActive);
+  // const store = useStore();
+  const dataLocal: any = parsedLocalStorage('tabActive');
+  const getTabActive = computed(() => dataLocal);
   return getTabActive;
 };
 export const useTabActive = () => {
   const store = useStore();
+  const dataLocal: any = parsedLocalStorage('tabActive');
   const tabActiveStore = computed(() => store.state.app.tabActive);
-  const tabActive = computed(() => store.getters.getTabActive);
-  if (tabActive.value.name) {
+  const tabActive = computed(() => dataLocal);
+  if (tabActive.value?.name) {
     store.commit('setTabActive', tabActive.value);
     return tabActive;
   } else {

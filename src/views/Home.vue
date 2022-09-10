@@ -1,6 +1,6 @@
 <template>
   <div class="home">
-    <div class="flex justify-center items-center space-x-8">
+    <div class="flex items-center justify-center space-x-8">
       <p ref="data">Some data</p>
       <b-button
         variant="outline-primary"
@@ -19,8 +19,7 @@ import { toClipboard } from '@soerenmartius/vue3-clipboard';
 
 export default defineComponent({
   name: 'HomePage',
-  components: {
-  },
+  components: {},
   setup() {
     const data = ref<HTMLElement | undefined | null>(null);
     const value = ref<HTMLElement | undefined | null | string>(null);

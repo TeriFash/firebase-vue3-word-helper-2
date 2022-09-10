@@ -1,4 +1,5 @@
-import * as functions from "firebase-functions";
+// eslint-disable-next-line
+import * as functions from 'firebase-functions';
 
 export const test = async (
   data: {},

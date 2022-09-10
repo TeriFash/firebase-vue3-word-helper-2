@@ -47,6 +47,7 @@ export default defineComponent({
     WordList
   },
   setup() {
+    // useTabActive();
     onMounted(() => {
       useTabActive();
     });

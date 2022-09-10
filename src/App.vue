@@ -1,5 +1,5 @@
 <template>
-  <header-navbar :signed-in="isSignedIn" />
+  <HeaderNavbar :signed-in="isSignedIn" />
   <Suspense>
     <router-view />
   </Suspense>

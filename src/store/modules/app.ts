@@ -5,8 +5,8 @@ export interface IAppState {
   data: object | null | undefined;
   textInClipboard: string | '';
   tabActive: {
-    index: number;
-    name: string;
+    index: number | 0 | string;
+    name: string | '';
   };
 }
 
@@ -94,7 +94,8 @@ const store: Module<IAppState, unknown> = {
     },
   },
   getters: {
-    getTabActive: (state: IAppState) => tabActive || state.tabActive,
+    getTabActive: (state: IAppState) =>
+      state.tabActive || parsedLocalStorage('tabActive'),
     getClipboardData: (state: IAppState) =>
       state.textInClipboard || localStorage.getItem('textInClipboard'),
   },
