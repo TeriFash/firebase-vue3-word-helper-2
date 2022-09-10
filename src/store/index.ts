@@ -8,13 +8,13 @@ export interface State {
 
 export const key: InjectionKey<Store<State>> = Symbol();
 
-export default createStore<Store<IStore>>({
+export default createStore<IStore>({
   modules,
   // strict: Base.IS_DEV,
 });
 
 export function useStore() {
-  return baseUseStore(key);
+  return baseUseStore();
   // return baseUseStore();
 }
 

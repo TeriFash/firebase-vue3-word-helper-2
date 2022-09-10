@@ -95,7 +95,7 @@ const store: Module<IAppState, unknown> = {
   },
   getters: {
     getTabActive: (state: IAppState) =>
-      state.tabActive || parsedLocalStorage('tabActive'),
+      tabActive || parsedLocalStorage('tabActive'),
     getClipboardData: (state: IAppState) =>
       state.textInClipboard || localStorage.getItem('textInClipboard'),
   },
