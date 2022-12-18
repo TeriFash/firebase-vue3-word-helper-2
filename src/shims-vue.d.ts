@@ -1,12 +1,13 @@
 /* eslint-disable */
 declare module '*.vue' {
-  import type { DefineComponent } from 'vue'
-  const component: DefineComponent<{}, {}, any>
-  export default component
+	import type { DefineComponent } from 'vue'
+	const component: DefineComponent<{}, {}, any>
+	export default component
 }
-
 declare module 'click-outside-vue3';
 declare module 'lodash';
+declare module 'vue-router';
+declare module 'vue-i18n';
 
 interface AnyObject {
 	[key: string]: any

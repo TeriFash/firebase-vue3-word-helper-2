@@ -6,7 +6,6 @@
       title="'Google account'"
       variant="info"
     >
-<<<<<<< HEAD
       Signin with Google account
     </b-button>
   </div>
@@ -14,15 +13,6 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
 import { googleSignin } from '@utils/SocialLogin';
-=======
-      Signing with Google account
-    </a>
-  </div>
-</template>
-<script lang="ts">
-import { defineComponent } from "vue";
-import { googleSignin } from "@/utils/SocialLogin";
->>>>>>> 426f61e (fix: page)
 
 export default defineComponent({
   name: 'AccountPage',

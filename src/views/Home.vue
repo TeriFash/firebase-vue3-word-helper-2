@@ -45,6 +45,6 @@ export default defineComponent({
   },
   data: () => ({
     // valueSet: undefined
-  })
+  }),
 });
 </script>
